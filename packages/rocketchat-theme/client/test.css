@@ -1,0 +1,8 @@
+:root {
+    --some-var: red;
+}
+
+.uma-classe {
+    display: flex;
+    color: var(--some-var);
+}

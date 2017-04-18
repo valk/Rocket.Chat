@@ -57,6 +57,7 @@ jparker:crypto-core@0.1.0
 jparker:crypto-md5@0.1.1
 jparker:gravatar@0.5.1
 jquery@1.11.10
+juliancwirko:postcss@1.2.0
 kadira:blaze-layout@2.3.0
 kadira:flow-router@2.12.1
 kenton:accounts-sandstorm@0.6.0
@@ -232,7 +233,6 @@ smoral:sweetalert@1.1.1
 spacebars@1.0.15
 spacebars-compiler@1.1.2
 srp@1.0.10
-standard-minifier-css@1.3.4
 standard-minifier-js@1.2.3
 steffo:meteor-accounts-saml@0.0.1
 tap:i18n@1.8.2
