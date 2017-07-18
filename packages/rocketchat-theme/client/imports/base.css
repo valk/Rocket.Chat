@@ -4981,7 +4981,7 @@ a + br.only-after-a {
 	background: green;
 }
 
-.leader-status .color-ball.offline {
+.leader-status .color-ball {
 	background: grey;
 }
 
