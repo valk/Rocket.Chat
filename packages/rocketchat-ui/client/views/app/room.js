@@ -218,10 +218,6 @@ Template.room.helpers({
 		return userCanDrop(this._id);
 	},
 
-	roomLeader() {
-		return RocketChat.models.Subscriptions.findUsersInRoles('leader', this._id).fetch()[0];
-	},
-
 	canPreview() {
 		const room = Session.get(`roomData${ this._id }`);
 		if (room && room.t !== 'c') {
@@ -697,12 +693,26 @@ Template.room.onCreated(function() {
 		return this.userDetail.set(null);
 	};
 
+	function setLeader(u){
+		const $leaderContainer = $('.room-leader-container');
+		$leaderContainer.removeClass('hidden');
+		$leaderContainer.find('.leader-info .leader-name').html(u.name || u.username);
+		$leaderContainer.find('.avatar-image').attr("style", "background-image:url(/avatar/" + u.username + "?_dc=undefined);");
+		$leaderContainer.find('.chat-now').attr('href', '/direct/' + u.username);
+		const currUser = RocketChat.models.Users.find({ _id:  u._id}).fetch()[0];
+		$leaderContainer.find('.leader-status').addClass(currUser.status);
+		$leaderContainer.find('.leader-status-text').html(currUser.status);
+	}
+
 	Meteor.call('getRoomRoles', this.data._id, function(error, results) {
 		if (error) {
 			return handleError(error);
 		}
 
 		return Array.from(results).map((record) => {
+			if (record.roles.indexOf('leader') > -1) {
+				setLeader(record.u);
+			}
 			delete record._id;
 			RoomRoles.upsert({ rid: record.rid, 'u._id': record.u._id }, record);
 		});
