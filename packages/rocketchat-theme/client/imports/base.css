@@ -2171,7 +2171,12 @@ label.required::after {
 	& .footer {
 		padding: 8px 20px 0;
 		border-width: 1px 0 0;
-		flex-shrink: 0;
+		z-index: 100;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		min-height: var(--footer-min-height);
+		height: 130px;
 	}
 
 	& .message-form {
@@ -2525,6 +2530,7 @@ label.required::after {
 .messages-box {
 	position: relative;
 	overflow: hidden;
+	width: 100%;
 	flex-grow: 1;
 
 	& .message-cog-container .message-action.jump-to-search-message {
