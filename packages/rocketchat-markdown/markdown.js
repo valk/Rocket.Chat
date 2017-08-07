@@ -8,7 +8,11 @@ class MarkdownClass {
 		return this.parseNotEscaped(_.escapeHTML(text));
 	}
 
-	parseNotEscaped(msg) {
+	parseNotEscaped(msg, message) {
+		if (message && message.tokens == null) {
+			message.tokens = [];
+		}
+
 		const schemes = RocketChat.settings.get('Markdown_SupportSchemesForLink').split(',').join('|');
 
 		if (RocketChat.settings.get('Markdown_Headers')) {
