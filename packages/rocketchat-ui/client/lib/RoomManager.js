@@ -12,7 +12,7 @@ const RoomManager = new function() {
 				Object.keys(openedRooms).forEach(typeName => {
 					const record = openedRooms[typeName];
 					if (record.active !== true || record.ready === true) { return; }
-					const ready = CachedChatRoom.ready.get() && CachedChatSubscription.ready.get() === true;
+					const ready = CachedChatRoom.ready.get() && CachedChatSubscription.ready.get() === true && RocketChat.settings.cachedCollection.ready.get();
 					if (ready !== true) { return; }
 					const user = Meteor.user();
 
