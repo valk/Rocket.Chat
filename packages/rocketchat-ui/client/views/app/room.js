@@ -852,7 +852,7 @@ Template.room.onRendered(function() {
 
 	template.sendToBottomIfNecessaryDebounced = _.debounce(template.sendToBottomIfNecessary, 10);
 
-	template.sendToBottomIfNecessary();
+	//template.sendToBottomIfNecessary(); //Only need one of these
 
 	if ((window.MutationObserver == null)) {
 		wrapperUl.addEventListener('DOMSubtreeModified', () => template.sendToBottomIfNecessaryDebounced());
