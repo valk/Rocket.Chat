@@ -315,7 +315,7 @@ let touchMoved = false;
 let lastTouchX = null;
 let lastTouchY = null;
 let lastScrollTop;
-let leaderLoaded = false;
+let leaderLoaded;
 
 Template.room.events({
 	'click header h2'() {
@@ -699,6 +699,7 @@ Template.room.events({
 Template.room.onCreated(function() {
 	// this.scrollOnBottom = true
 	// this.typing = new msgTyping this.data._id
+	leaderLoaded = false;
 	this.showUsersOffline = new ReactiveVar(false);
 	this.atBottom = FlowRouter.getQueryParam('msg') ? false : true;
 	this.unreadCount = new ReactiveVar(0);
@@ -851,7 +852,7 @@ Template.room.onRendered(function() {
 
 	template.sendToBottomIfNecessaryDebounced = _.debounce(template.sendToBottomIfNecessary, 10);
 
-	template.sendToBottomIfNecessary();
+	//template.sendToBottomIfNecessary(); //Only need one of these
 
 	if ((window.MutationObserver == null)) {
 		wrapperUl.addEventListener('DOMSubtreeModified', () => template.sendToBottomIfNecessaryDebounced());
