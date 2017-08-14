@@ -13,6 +13,12 @@ Meteor.methods({
 			message.u.name = user.name;
 		}
 		message.temp = true;
+
+		message.room = RocketChat.models.Rooms.findOne({_id: message.rid});
+		if (message.room.t === 'd') {
+			message.recipient = RocketChat.OTR.getInstanceByRoomId(message.rid).peerId;
+		}
+		window.fireGlobalEvent('sent-message', message);
 		message = RocketChat.callbacks.run('beforeSaveMessage', message);
 		RocketChat.promises.run('onClientMessageReceived', message).then(function(message) {
 			ChatMessage.insert(message);
