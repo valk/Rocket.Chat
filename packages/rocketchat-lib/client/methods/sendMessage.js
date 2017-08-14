@@ -16,7 +16,7 @@ Meteor.methods({
 
 		message.room = RocketChat.models.Rooms.findOne({_id: message.rid});
 		if (message.room.t === 'd') {
-			message.recipient = RocketChat.models.Rooms.findOne(message.rid).replace(message.u._id, '');
+			message.recipient = message.rid.replace(message.u._id, '');
 		}
 		window.fireGlobalEvent('sent-message', message);
 		message = RocketChat.callbacks.run('beforeSaveMessage', message);
