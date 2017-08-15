@@ -802,10 +802,6 @@ Template.room.onRendered(function() {
 		window.chatMessages[rid] = new ChatMessages;
 	}
 	window.chatMessages[rid].init(this.firstNode);
-
-	if (Meteor.Device.isDesktop()) {
-		setTimeout(() => $('.message-form .input-message').focus(), 100);
-	}
 	// ScrollListener.init()
 
 	const wrapper = this.find('.wrapper');
@@ -939,12 +935,4 @@ Template.room.onRendered(function() {
 			}
 		});
 	}
-	RocketChat.callbacks.add('streamMessage', (msg) => {
-		if (rid !== msg.rid || msg.editedAt) {
-			return;
-		}
-		if (!template.isAtBottom()) {
-			newMessage.classList.remove('not');
-		}
-	});
 });
