@@ -3275,13 +3275,7 @@ body:not(.is-cordova) {
 	}
 }
 
-.list-view {
-	-webkit-overflow-scrolling: touch;
-	overflow-y: auto;
-	overflow-x: hidden;
-	z-index: 10;
-	padding: 20px;
-
+.rc-old .list-view {
 	& .list {
 		display: flex;
 		flex-flow: column nowrap;
@@ -4557,14 +4551,12 @@ body:not(.is-cordova) {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-
+		padding: 20px;
 	}
 
 	&__header {
 		flex: 0 0 auto;
-		z-index: none;
-		overflow: auto;
-		padding: 20px;
+		padding-bottom: 10px;
 	}
 
 	&__result {
