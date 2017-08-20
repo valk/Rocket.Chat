@@ -527,8 +527,7 @@ Find users to send a message by email if:
 			status: 'offline',
 			statusConnection: {
 				$ne: 'online'
-			},
-			'emails.verified': true
+			}
 		};
 
 		return this.find(query, { fields: { name: 1, username: 1, emails: 1, 'settings.preferences.emailNotificationMode': 1 } });

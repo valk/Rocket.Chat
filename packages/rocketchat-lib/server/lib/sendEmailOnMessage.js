@@ -41,7 +41,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 			'color: #fff;',
 			'padding: 9px 12px;',
 			'border-radius: 4px;',
-			'background-color: #04436a;',
+			'background-color: #ff7200;',
 			'text-decoration: none;'
 		].join(' ');
 		const message = TAPi18n.__('Offline_Link_Message');
@@ -115,7 +115,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 				}
 
 				user.emails.some((email) => {
-					if (email.verified) {
+					if (!RocketChat.settings.get('Accounts_EmailVerification') || email.verified) {
 						email = {
 							to: email.address,
 							from: RocketChat.settings.get('From_Email'),
