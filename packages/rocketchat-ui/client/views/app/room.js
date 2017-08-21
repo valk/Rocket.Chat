@@ -935,4 +935,12 @@ Template.room.onRendered(function() {
 			}
 		});
 	}
+	RocketChat.callbacks.add('streamMessage', (msg) => {
+		if (rid !== msg.rid || msg.editedAt) {
+			return;
+		}
+		if (!template.isAtBottom()) {
+			newMessage.classList.remove('not');
+		}
+	});
 });
