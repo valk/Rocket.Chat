@@ -116,6 +116,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 				}
 
 				user.emails.some((email) => {
+					console.log(`Sending email to ${ email.address }`);
 					if (!RocketChat.settings.get('Accounts_EmailVerification') || email.verified) {
 						email = {
 							to: email.address,
