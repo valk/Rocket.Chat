@@ -1,5 +1,5 @@
 <template name="messageSearch">
-	<div class="list-view flex-tab__header search-messages-list">
+	<div class="list-view flex-tab__header">
 		<div class="title">
 			<h2>{{_ "Search_Messages"}}</h2>
 			<p>{{_ "You_can_search_using_RegExp_eg"}} <code class="code-colors inline">/^text$/i</code></p>
@@ -13,9 +13,9 @@
 			</form>
 		</div>
 		{{#if currentSearchTerm}}
-			{{#unless searchResultMessages}}
-				<h2>{{_ "No_results_found"}}</h2>
-			{{/unless}}
+		{{#unless searchResultMessages}}
+		<h2>{{_ "No_results_found"}}</h2>
+		{{/unless}}
 		{{/if}}
 	</div>
 	{{#if currentSearchTerm}}

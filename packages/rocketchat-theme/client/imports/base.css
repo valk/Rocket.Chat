@@ -3275,7 +3275,7 @@ body:not(.is-cordova) {
 	}
 }
 
-.rc-old .list-view {
+.list-view {
 	& .list {
 		display: flex;
 		flex-flow: column nowrap;
@@ -4546,7 +4546,7 @@ body:not(.is-cordova) {
 	height: 10px;
 }
 
-.rc-old .flex-tab {
+.flex-tab {
 	&__content {
 		display: flex;
 		flex-direction: column;
