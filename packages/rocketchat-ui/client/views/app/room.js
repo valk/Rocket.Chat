@@ -325,7 +325,7 @@ Template.room.events({
 		return Meteor.setTimeout(() => t.sendToBottomIfNecessaryDebounced(), 100);
 	},
 
-	'click .messages-container'() {
+	'click .messages-container-main'() {
 		const user = Meteor.user();
 
 		if ((Template.instance().tabBar.getState() === 'opened') && user && user.settings && user.settings.preferences && user.settings.preferences.hideFlexTab) {
@@ -890,6 +890,7 @@ Template.room.onRendered(function() {
 	$('.flex-tab-bar').on('click', (/*e, t*/) =>
 		Meteor.setTimeout(() => template.sendToBottomIfNecessaryDebounced(), 50)
 	);
+	lastScrollTop = $('.messages-box .wrapper').scrollTop();
 
 	const rtl = $('html').hasClass('rtl');
 
