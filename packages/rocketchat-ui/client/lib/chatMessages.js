@@ -176,7 +176,7 @@ this.ChatMessages = class ChatMessages {
 			const msg = input.value;
 			const msgObject = { _id: Random.id(), rid, msg};
 
-				if (msg.slice(0, 2) === '+:') {
+			if (msg.slice(0, 2) === '+:') {
 				const reaction = msg.slice(1).trim();
 				if (RocketChat.emoji.list[reaction]) {
 					const lastMessage = ChatMessage.findOne({rid}, { fields: { ts: 1 }, sort: { ts: -1 }});
