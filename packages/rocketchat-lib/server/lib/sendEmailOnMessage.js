@@ -10,10 +10,10 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 		return message;
 	}
 
-	const getMessageLink = (room, sub) => {
+	const getMessageLink = (room, sub, msg) => {
 		const roomPath = RocketChat.roomTypes.getRouteLink(room.t, sub);
 		const saPath = Meteor.absoluteUrl().replace('rc.', '');
-		const path = `${ saPath }account/chat?direct_link=${ Meteor.absoluteUrl(roomPath ? roomPath.replace(/^\//, '') : '') }`;
+		const path = `${ saPath }account/chat?direct_link=${ Meteor.absoluteUrl(roomPath ? roomPath.replace(/^\//, '') : '') }?msg=${msg._id}`;
 		const style = [
 			'color: #fff;',
 			'padding: 9px 12px;',
@@ -74,10 +74,10 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 	const linkByUser = {};
 	if (RocketChat.roomTypes.hasCustomLink(room.t)) {
 		RocketChat.models.Subscriptions.findByRoomIdAndUserIds(room._id, userIdsToSendEmail).forEach((sub) => {
-			linkByUser[sub.u._id] = getMessageLink(room, sub);
+			linkByUser[sub.u._id] = getMessageLink(room, sub, message);
 		});
 	} else {
-		defaultLink = getMessageLink(room, { name: room.name });
+		defaultLink = getMessageLink(room, { name: room.name }, message);
 	}
 
 	if (userIdsToSendEmail.length > 0) {
