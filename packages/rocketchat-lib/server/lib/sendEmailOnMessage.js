@@ -13,7 +13,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 	const getMessageLink = (room, sub, msg) => {
 		const roomPath = RocketChat.roomTypes.getRouteLink(room.t, sub);
 		const saPath = Meteor.absoluteUrl().replace('rc.', '');
-		const path = `${ saPath }account/chat?direct_link=${ Meteor.absoluteUrl(roomPath ? roomPath.replace(/^\//, '') : '') }?msg=${msg._id}`;
+		const path = `${ saPath }account/chat?direct_link=${ Meteor.absoluteUrl(roomPath ? roomPath.replace(/^\//, '') : '') }?msg=${ msg._id }`;
 		const style = [
 			'color: #fff;',
 			'padding: 9px 12px;',
