@@ -10,38 +10,15 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 		return message;
 	}
 
-	let emailSubject;
-	const usersToSendEmail = {};
-	const directMessage = room.t === 'd';
-
-	if (directMessage) {
-		usersToSendEmail[message.rid.replace(message.u._id, '')] = 1;
-
-		emailSubject = TAPi18n.__('Offline_DM_Email', {
-			user: message.u.username
-		});
-
-	} else {
-		if (message.mentions) {
-			message.mentions.forEach(function(mention) {
-				usersToSendEmail[mention._id] = 1;
-			});
-		}
-
-		emailSubject = TAPi18n.__('Offline_Mention_Email', {
-			user: message.u.username,
-			room: room.name
-		});
-	}
-
-	const getMessageLink = (room, sub) => {
+	const getMessageLink = (room, sub, msg) => {
 		const roomPath = RocketChat.roomTypes.getRouteLink(room.t, sub);
-		const path = Meteor.absoluteUrl(roomPath ? roomPath.replace(/^\//, '') : '');
+		const saPath = Meteor.absoluteUrl().replace('rc.', '');
+		const path = `${ saPath }account/chat?direct_link=${ Meteor.absoluteUrl(roomPath ? roomPath.replace(/^\//, '') : '') }?msg=${ msg._id }`;
 		const style = [
 			'color: #fff;',
 			'padding: 9px 12px;',
 			'border-radius: 4px;',
-			'background-color: #04436a;',
+			'background-color: #ff7200;',
 			'text-decoration: none;'
 		].join(' ');
 		const message = TAPi18n.__('Offline_Link_Message');
@@ -63,28 +40,33 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 	const footer = RocketChat.placeholders.replace(RocketChat.settings.get('Email_Footer') || '');
 	messageHTML = messageHTML.replace(/\n/gm, '<br/>');
 
-	RocketChat.models.Subscriptions.findWithSendEmailByRoomId(room._id).forEach((sub) => {
-		if (sub.disableNotifications) {
-			delete usersToSendEmail[sub.u._id];
-		} else {
-			switch (sub.emailNotifications) {
-				case 'all':
-					usersToSendEmail[sub.u._id] = 'force';
-					break;
-				case 'mentions':
-					if (usersToSendEmail[sub.u._id]) {
-						usersToSendEmail[sub.u._id] = 'force';
-					}
-					break;
-				case 'nothing':
-					delete usersToSendEmail[sub.u._id];
-					break;
-				case 'default':
-					break;
+	const usersToSendEmail = {};
+	if (room.t === 'd') {
+		usersToSendEmail[message.rid.replace(message.u._id, '')] = 'direct';
+	} else {
+		RocketChat.models.Subscriptions.findWithSendEmailByRoomId(room._id).forEach((sub) => {
+			if (sub.disableNotifications) {
+				return delete usersToSendEmail[sub.u._id];
 			}
-		}
-	});
 
+			const emailNotifications = sub.emailNotifications;
+
+			if (emailNotifications !== 'nothing') {
+				const mentionedUser = message.mentions.find((mention) => {
+					return mention._id === sub.u._id;
+				});
+
+				if (emailNotifications === 'mentions' || mentionedUser) {
+					return usersToSendEmail[sub.u._id] = 'mention';
+				}
+
+				if (emailNotifications === 'all') {
+					return usersToSendEmail[sub.u._id] = 'all';
+				}
+			}
+			delete usersToSendEmail[sub.u._id];
+		});
+	}
 	const userIdsToSendEmail = Object.keys(usersToSendEmail);
 
 	let defaultLink;
@@ -92,10 +74,10 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 	const linkByUser = {};
 	if (RocketChat.roomTypes.hasCustomLink(room.t)) {
 		RocketChat.models.Subscriptions.findByRoomIdAndUserIds(room._id, userIdsToSendEmail).forEach((sub) => {
-			linkByUser[sub.u._id] = getMessageLink(room, sub);
+			linkByUser[sub.u._id] = getMessageLink(room, sub, message);
 		});
 	} else {
-		defaultLink = getMessageLink(room, { name: room.name });
+		defaultLink = getMessageLink(room, { name: room.name }, message);
 	}
 
 	if (userIdsToSendEmail.length > 0) {
@@ -114,8 +96,30 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 					return;
 				}
 
+				let emailSubject;
+				const username = RocketChat.settings.get('UI_Use_Real_Name') ? message.u.name : message.u.username;
+				const roomName = RocketChat.settings.get('UI_Allow_room_names_with_special_chars') ? room.fname : room.name;
+
+				switch (usersToSendEmail[user._id]) {
+					case 'all':
+						emailSubject = TAPi18n.__('Offline_Mention_All_Email', {
+							user: username,
+							room: roomName || room.label
+						});
+						break;
+					case 'direct':
+						emailSubject = TAPi18n.__('Offline_DM_Email', {	user: username });
+						break;
+					case 'mention':
+						emailSubject = TAPi18n.__('Offline_Mention_Email', {
+							user: username,
+							room: roomName
+						});
+						break;
+				}
 				user.emails.some((email) => {
-					if (email.verified) {
+					console.log(`Sending email to ${ email.address }`);
+					if (!RocketChat.settings.get('Accounts_EmailVerification') || email.verified) {
 						email = {
 							to: email.address,
 							from: RocketChat.settings.get('From_Email'),

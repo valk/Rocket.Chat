@@ -1,4 +1,4 @@
-/* globals RocketChatTabBar , fileUpload , fireGlobalEvent , mobileMessageMenu , cordova , readMessage , RoomRoles*/
+/* globals RocketChatTabBar , chatMessages, fileUpload , fireGlobalEvent , mobileMessageMenu , cordova , readMessage , RoomRoles*/
 import moment from 'moment';
 import mime from 'mime-type/with-db';
 
@@ -310,7 +310,6 @@ let touchMoved = false;
 let lastTouchX = null;
 let lastTouchY = null;
 let lastScrollTop;
-let leaderLoaded;
 
 Template.room.events({
 	'click header h2'() {
@@ -325,7 +324,7 @@ Template.room.events({
 		return Meteor.setTimeout(() => t.sendToBottomIfNecessaryDebounced(), 100);
 	},
 
-	'click .messages-container'() {
+	'click .messages-container-main'() {
 		const user = Meteor.user();
 
 		if ((Template.instance().tabBar.getState() === 'opened') && user && user.settings && user.settings.preferences && user.settings.preferences.hideFlexTab) {
@@ -508,12 +507,11 @@ Template.room.events({
 	'scroll .wrapper': _.throttle(function(e, t) {
 		const $roomLeader = $('.room-leader');
 		if ($roomLeader.length) {
-			if (e.target.scrollTop < lastScrollTop || !leaderLoaded) {
+			if (e.target.scrollTop < lastScrollTop) {
 				t.hideLeaderHeader.set(false);
-			} else if (e.target.scrollTop > $('.room-leader').height()) {
+			} else if (t.isAtBottom(100) === false && e.target.scrollTop > $('.room-leader').height()) {
 				t.hideLeaderHeader.set(true);
 			}
-			leaderLoaded = true;
 		}
 		lastScrollTop = e.target.scrollTop;
 
@@ -533,7 +531,7 @@ Template.room.events({
 
 	'click .new-message'() {
 		Template.instance().atBottom = true;
-		return Template.instance().find('.input-message').focus();
+		return chatMessages[RocketChat.openedRoom].input.focus();
 	},
 
 	'click .message-cog'() {
@@ -694,7 +692,6 @@ Template.room.events({
 Template.room.onCreated(function() {
 	// this.scrollOnBottom = true
 	// this.typing = new msgTyping this.data._id
-	leaderLoaded = false;
 	this.showUsersOffline = new ReactiveVar(false);
 	this.atBottom = FlowRouter.getQueryParam('msg') ? false : true;
 	this.unreadCount = new ReactiveVar(0);
@@ -800,15 +797,15 @@ Template.room.onDestroyed(function() {
 
 Template.room.onRendered(function() {
 	window.chatMessages = window.chatMessages || {};
-	if (!window.chatMessages[Session.get('openedRoom')]) {
-		window.chatMessages[Session.get('openedRoom')] = new ChatMessages;
+	const rid = Session.get('openedRoom');
+	if (!window.chatMessages[rid]) {
+		window.chatMessages[rid] = new ChatMessages;
 	}
-	window.chatMessages[Session.get('openedRoom')].init(this.firstNode);
+	window.chatMessages[rid].init(this.firstNode);
 
 	if (Meteor.Device.isDesktop()) {
 		setTimeout(() => $('.message-form .input-message').focus(), 100);
 	}
-
 	// ScrollListener.init()
 
 	const wrapper = this.find('.wrapper');
@@ -847,7 +844,7 @@ Template.room.onRendered(function() {
 
 	template.sendToBottomIfNecessaryDebounced = _.debounce(template.sendToBottomIfNecessary, 10);
 
-	//template.sendToBottomIfNecessary(); //Only need one of these
+	template.sendToBottomIfNecessary();
 
 	if ((window.MutationObserver == null)) {
 		wrapperUl.addEventListener('DOMSubtreeModified', () => template.sendToBottomIfNecessaryDebounced());
@@ -890,6 +887,7 @@ Template.room.onRendered(function() {
 	$('.flex-tab-bar').on('click', (/*e, t*/) =>
 		Meteor.setTimeout(() => template.sendToBottomIfNecessaryDebounced(), 50)
 	);
+	lastScrollTop = $('.messages-box .wrapper').scrollTop();
 
 	const rtl = $('html').hasClass('rtl');
 
@@ -941,4 +939,12 @@ Template.room.onRendered(function() {
 			}
 		});
 	}
+	RocketChat.callbacks.add('streamMessage', (msg) => {
+		if (rid !== msg.rid || msg.editedAt) {
+			return;
+		}
+		if (!template.isAtBottom()) {
+			newMessage.classList.remove('not');
+		}
+	});
 });

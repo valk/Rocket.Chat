@@ -148,6 +148,9 @@ class ModelUsers extends RocketChat.models._Base {
 						},
 						{
 							name: termRegex
+						},
+						{
+							'emails.address': termRegex
 						}
 					]
 				},
@@ -223,6 +226,15 @@ class ModelUsers extends RocketChat.models._Base {
 			}
 		};
 
+		return this.find(query, options);
+	}
+
+	findUsersByIds(ids, options) {
+		const query = {
+			_id: {
+				$in: ids
+			}
+		};
 		return this.find(query, options);
 	}
 
@@ -527,8 +539,7 @@ Find users to send a message by email if:
 			status: 'offline',
 			statusConnection: {
 				$ne: 'online'
-			},
-			'emails.verified': true
+			}
 		};
 
 		return this.find(query, { fields: { name: 1, username: 1, emails: 1, 'settings.preferences.emailNotificationMode': 1 } });

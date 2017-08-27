@@ -76,14 +76,19 @@ Template.messageSearch.events({
 		e.preventDefault();
 		const message_id = $(e.currentTarget).closest('.message').attr('id');
 		const searchResult = t.searchResult.get();
+		let dropDown = t.$(`\#${ message_id } .message-dropdown`);
 		RocketChat.MessageAction.hideDropDown();
-		t.$(`\#${ message_id } .message-dropdown`).remove();
+		if (dropDown.length > 0) {
+			dropDown.remove();
+			return;
+		}
 		if (searchResult) {
 			const message = _.findWhere(searchResult.messages, { _id: message_id });
 			const actions = RocketChat.MessageAction.getButtons(message, 'search');
 			const el = Blaze.toHTMLWithData(Template.messageDropdown, { actions });
 			t.$(`\#${ message_id } .message-cog-container`).append(el);
-			const dropDown = t.$(`\#${ message_id } .message-dropdown`);
+			dropDown = t.$(`\#${ message_id } .message-dropdown`);
+			t.$(`\#${ message_id } .message-cog`).addClass('open');
 			return dropDown.show();
 		}
 	},
@@ -93,7 +98,7 @@ Template.messageSearch.events({
 		return t.search();
 	},
 
-	'scroll .content': _.throttle(function(e, t) {
+	'scroll .js-list': _.throttle(function(e, t) {
 		if (e.target.scrollTop >= (e.target.scrollHeight - e.target.clientHeight)) {
 			t.limit.set(t.limit.get() + 20);
 			return t.search();

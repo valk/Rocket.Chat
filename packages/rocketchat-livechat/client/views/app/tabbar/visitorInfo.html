@@ -12,16 +12,16 @@
 					<h3 title="{{username}}"><i class="status-{{status}}"></i> {{username}}</h3>
 					<p class="secondary-font-color">{{name}}</p>
 
-					<ul>
-						{{#each phone}} <li><i class="icon-phone"></i> {{phoneNumber}}</li> {{/each}}
-						{{#if lastLogin}} <li><i class="icon-calendar"></i> {{_ "Created_at"}}: {{createdAt}}</li> {{/if}}
-						{{#if lastLogin}} <li><i class="icon-calendar"></i> {{_ "Last_login"}}: {{lastLogin}}</li> {{/if}}
-						{{#if ip}}<li><i class="icon-laptop"></i><span>{{ip}}</span></li>{{/if}}
-						{{#if os}}<li><i class="{{osIcon}}"></i><span>{{os}}</span></li>{{/if}}
-						{{#if browser}}<li><i class="{{browserIcon}}"></i><span>{{browser}}</span></li>{{/if}}
-					</ul>
-				</div>
-			{{/with}}
+						<ul>
+							{{#each phone}} <li><i class="icon-phone"></i> {{phoneNumber}}</li> {{/each}}
+							{{#if lastLogin}} <li><i class="icon-calendar"></i> {{_ "Created_at"}}: {{createdAt}}</li> {{/if}}
+							{{#if lastLogin}} <li><i class="icon-calendar"></i> {{_ "Last_login"}}: {{lastLogin}}</li> {{/if}}
+							{{#if ip}}<li><i class="icon-laptop"></i><span>{{ip}}</span></li>{{/if}}
+							{{#if os}}<li><i class="{{osIcon}}"></i><span>{{os}}</span></li>{{/if}}
+							{{#if browser}}<li><i class="{{browserIcon}}"></i><span>{{browser}}</span></li>{{/if}}
+						</ul>
+					</div>
+				{{/with}}
 
 			{{#with room}}
 				<div class="info">
