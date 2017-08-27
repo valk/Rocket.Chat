@@ -310,7 +310,6 @@ let touchMoved = false;
 let lastTouchX = null;
 let lastTouchY = null;
 let lastScrollTop;
-let leaderLoaded;
 
 Template.room.events({
 	'click header h2'() {
@@ -508,12 +507,11 @@ Template.room.events({
 	'scroll .wrapper': _.throttle(function(e, t) {
 		const $roomLeader = $('.room-leader');
 		if ($roomLeader.length) {
-			if (e.target.scrollTop < lastScrollTop || !leaderLoaded) {
+			if (e.target.scrollTop < lastScrollTop) {
 				t.hideLeaderHeader.set(false);
-			} else if (e.target.scrollTop > $('.room-leader').height()) {
+			} else if (t.isAtBottom(100) === false && e.target.scrollTop > $('.room-leader').height()) {
 				t.hideLeaderHeader.set(true);
 			}
-			leaderLoaded = true;
 		}
 		lastScrollTop = e.target.scrollTop;
 
@@ -694,7 +692,6 @@ Template.room.events({
 Template.room.onCreated(function() {
 	// this.scrollOnBottom = true
 	// this.typing = new msgTyping this.data._id
-	leaderLoaded = false;
 	this.showUsersOffline = new ReactiveVar(false);
 	this.atBottom = FlowRouter.getQueryParam('msg') ? false : true;
 	this.unreadCount = new ReactiveVar(0);
@@ -847,7 +844,7 @@ Template.room.onRendered(function() {
 
 	template.sendToBottomIfNecessaryDebounced = _.debounce(template.sendToBottomIfNecessary, 10);
 
-	//template.sendToBottomIfNecessary(); //Only need one of these
+	template.sendToBottomIfNecessary();
 
 	if ((window.MutationObserver == null)) {
 		wrapperUl.addEventListener('DOMSubtreeModified', () => template.sendToBottomIfNecessaryDebounced());
