@@ -84,7 +84,6 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 		const usersOfMention = RocketChat.models.Users.getUsersToSendOfflineEmail(userIdsToSendEmail).fetch();
 
 		if (usersOfMention && usersOfMention.length > 0) {
-			const siteName = RocketChat.settings.get('Site_Name');
 
 			usersOfMention.forEach((user) => {
 				if (user.settings && user.settings.preferences && user.settings.preferences.emailNotificationMode && user.settings.preferences.emailNotificationMode === 'disabled' && usersToSendEmail[user._id] !== 'force') {
@@ -123,7 +122,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 						email = {
 							to: email.address,
 							from: RocketChat.settings.get('From_Email'),
-							subject: `[${ siteName }] ${ emailSubject }`,
+							subject: emailSubject,
 							html: header + messageHTML + divisorMessage + (linkByUser[user._id] || defaultLink) + footer
 						};
 
