@@ -14,28 +14,33 @@
 				</li>
 				{{#if $neq disableNotifications true}}
 					<li class="audio-notifications">
-						<label>{{_ "Audio"}}</label>
+						<label class="title">{{_ "Audio"}}</label>
+						{{#unless editing 'audioNotifications' }}
+							<i class="icon-pencil" data-edit="audioNotifications"></i>
+						{{/unless}}
 						<div>
-							{{#if editing 'audioNotifications'}}
-								<label><input type="radio" name="audioNotifications" value="default" checked="{{$eq audioNotifications 'default'}}" /> {{_ "Default"}} ({{_ defaultAudioNotification}})</label>
-								<label><input type="radio" name="audioNotifications" value="all" checked="{{$eq audioNotifications 'all'}}" /> {{_ "All_messages"}}</label>
-								<label><input type="radio" name="audioNotifications" value="mentions" checked="{{$eq audioNotifications 'mentions'}}" /> {{_ "Mentions"}}</label>
-								<br />
+    						{{#if editing 'audioNotifications'}}
+                                <div>Frequency:</div>
+                                <label><input type="radio" name="audioNotifications" value="default" checked="{{$eq audioNotifications 'default'}}" /> {{_ "Default"}} ({{_ defaultAudioNotification}})</label>
+                                <label><input type="radio" name="audioNotifications" value="all" checked="{{$eq audioNotifications 'all'}}" /> {{_ "All_messages"}}</label>
+                                <label><input type="radio" name="audioNotifications" value="mentions" checked="{{$eq audioNotifications 'mentions'}}" /> {{_ "Mentions"}}</label>
+                                <br />
 
-								<label>
-									<select name="audioNotificationValue" class="audio">
-										<option value="none" selected="{{$eq audioNotificationValue 'none'}}">{{_ "None"}}</option>
-										<option value="" selected="{{$eq audioNotificationValue subValue 'audioNotifications'}}">{{_ "Use_account_preference"}} ({{_ "Default"}})</option>
-										<option value="chime" selected="{{$eq audioNotificationValue 'chime'}}">Chime</option>
-										{{#each audioAssets}}
-											<option value="{{_id}}" selected="{{$eq audioNotificationValue _id}}">{{name}}</option>
-										{{/each}}
-									</select>
-								</label>
-								<button type="button" class="button cancel">{{_ "Cancel"}}</button>
-								<button type="button" class="button primary save">{{_ "Save"}}</button>
+                                <div>Sound: </div>
+                                <label>
+                                    <select name="audioNotificationValue" class="audio">
+                                        <option value="none" selected="{{$eq audioNotificationValue 'none'}}">{{_ "None"}}</option>
+                                        <option value="" selected="{{$eq audioNotificationValue subValue 'audioNotifications'}}">{{_ "Use_account_preference"}} ({{_ "Default"}})</option>
+                                        <option value="chime" selected="{{$eq audioNotificationValue 'chime'}}">Chime</option>
+                                        {{#each audioAssets}}
+                                            <option value="{{_id}}" selected="{{$eq audioNotificationValue _id}}">{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </label>
+                                <button type="button" class="button cancel">{{_ "Cancel"}}</button>
+                                <button type="button" class="button primary save">{{_ "Save"}}</button>
 							{{else}}
-								<span class="current-setting">{{subValue 'audioNotifications'}} : {{audioNotificationValue}}<i class="icon-play-circled" data-play="{{audioNotificationValue}}"></i> <i class="icon-pencil" data-edit="audioNotifications"></i></span>
+							    <span class="current-setting">Frequency: {{subValue 'audioNotifications'}} <br /> Sound: {{audioNotificationValue}}<i class="icon-play-circled" data-play="{{audioNotificationValue}}"></i> </span>
 							{{/if}}
 						</div>
 					</li>
@@ -85,7 +90,10 @@
 						</div>
 					</li>
 					<li class="email-notifications">
-						<label>{{_ "Email"}}</label>
+						<label class="title">{{_ "Email"}}</label>
+						{{#unless editing 'emailNotifications' }}
+							<i class="icon-pencil" data-edit="emailNotifications"></i>
+						{{/unless}}
 						<div>
 							{{#if editing 'emailNotifications'}}
 								<label><input type="radio" name="emailNotifications" value="all" checked="{{$eq emailNotifications 'all'}}" /> {{_ "All_messages"}}</label>
@@ -97,7 +105,7 @@
 								<button type="button" class="button cancel">{{_ "Cancel"}}</button>
 								<button type="button" class="button primary save">{{_ "Save"}}</button>
 							{{else}}
-								<span class="current-setting">{{subValue 'emailNotifications'}} <i class="icon-pencil" data-edit="emailNotifications"></i></span>
+								<span class="current-setting">{{subValue 'emailNotifications'}}</span>
 							{{/if}}
 						</div>
 					</li>
