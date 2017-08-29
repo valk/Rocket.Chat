@@ -9,6 +9,10 @@ Template.flexTabBar.helpers({
 		return RocketChat.TabBar.getButtons();
 	},
 
+	tabId() {
+		return this.id;
+	},
+
 	title() {
 		return t(this.i18nTitle) || this.title;
 	},

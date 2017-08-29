@@ -10,7 +10,7 @@
 		</section>
 		<div class="flex-tab-bar content-background-color" role="toolbar">
 			{{#each buttons}}
-				<div class="tab-button {{active}} {{visible}} {{class}}" title="{{title}}">
+				<div id="{{tabId}}" class="tab-button {{active}} {{visible}} {{class}}" title="{{title}}" >
 					<button aria-label="{{title}}"><i class="{{icon}}"></i></button>
 				</div>
 			{{/each}}
