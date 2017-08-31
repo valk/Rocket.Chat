@@ -421,7 +421,11 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room, userId) {
 			const duration = settings.desktopNotificationDurations[usersOfMentionId];
 			notifyDesktopUser(usersOfMentionId, user, message, room, duration);
 		}
+
+		console.log('RUNNING NOTIFICATIONS');
+
 		for (const usersOfMentionId of userIdsForAudio) {
+			console.log('NOTIFY AUDIO USER');
 			notifyAudioUser(usersOfMentionId, message, room);
 		}
 		sendPushNotifications(userIdsToPushNotify, message, room, push_room, push_username, push_message);
