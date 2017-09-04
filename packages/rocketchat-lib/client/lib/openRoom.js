@@ -64,7 +64,9 @@ function openRoom(type, name) {
 
 			Session.set('openedRoom', room._id);
 
-			fireGlobalEvent('room-opened', _.omit(room, 'usernames'));
+			const data = _.omit(room, 'usernames');
+			data['name'] = name;
+			fireGlobalEvent('room-opened', data);
 
 			Session.set('editRoomTitle', false);
 			RoomManager.updateMentionsMarksOfRoom(type + name);
