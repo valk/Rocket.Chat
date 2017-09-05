@@ -16,3 +16,24 @@ window.fireGlobalEvent = function _fireGlobalEvent(eventName, params) {
 	});
 };
 
+window.roomType = function _roomType(key) {
+	return key === 'd' ? 'direct_msg' : 'group';
+};
+
+window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
+	const params = {
+		type: t,
+		source: s,
+		action: a
+	};
+	if (d) {
+		params['data'] = d;
+	}
+	$.ajax({
+		type: 'POST',
+		url: `https://${ location.host.replace('rc.', '') }/mone_event`,
+		data: params
+	});
+};
+
+

@@ -132,7 +132,7 @@ Template.pushNotificationsFlexTab.helpers({
 				case 'default':
 					return t('Use_account_preference');
 				case 'mentions':
-					return t('Mentions');
+					return t('Mentions (on pop-out full screen mode only)');
 				default:
 					return t('Use_account_preference');
 			}
