@@ -19,6 +19,8 @@ Meteor.methods({
 			message.recipient = message.rid.replace(message.u._id, '');
 		}
 		window.fireGlobalEvent('sent-message', message);
+		window.fireMoneEvent(window.roomType(message.room.t), 'message', 'sent',
+			{ room_name: Session.get('currentRoomName') });
 		message = RocketChat.callbacks.run('beforeSaveMessage', message);
 		RocketChat.promises.run('onClientMessageReceived', message).then(function(message) {
 			ChatMessage.insert(message);
