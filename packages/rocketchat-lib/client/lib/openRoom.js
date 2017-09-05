@@ -67,8 +67,6 @@ function openRoom(type, name) {
 			const data = _.omit(room, 'usernames');
 			data['name'] = name;
 			fireGlobalEvent('room-opened', data);
-			window.fireMoneEvent(window.roomType(data.t), 'rc_chat', 'room-opened',
-				{room_name: data.name});
 			Session.set('currentRoomName', data.name);
 			Session.set('currentRoomType', data.t);
 			Session.set('editRoomTitle', false);

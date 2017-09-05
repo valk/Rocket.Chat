@@ -528,6 +528,9 @@ Template.room.events({
 					id: this._id,
 					name: roomData.name,
 					type: roomData.t});
+				window.fireMoneEvent(window.roomType(roomData.t), 'chat_thread', 'load_more',
+					{room_name: roomData.name});
+
 				return RoomHistoryManager.getMore(this._id);
 			} else if (RoomHistoryManager.hasMoreNext(this._id) === true && e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
 				return RoomHistoryManager.getMoreNext(this._id);
