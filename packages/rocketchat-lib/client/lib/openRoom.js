@@ -70,6 +70,7 @@ function openRoom(type, name) {
 			window.fireMoneEvent(window.roomType(data.t), 'rc_chat', 'room-opened',
 				{room_name: data.name});
 			Session.set('currentRoomName', data.name);
+			Session.set('currentRoomType', data.t);
 			Session.set('editRoomTitle', false);
 			RoomManager.updateMentionsMarksOfRoom(type + name);
 			Meteor.setTimeout(() => readMessage.readNow(), 2000);

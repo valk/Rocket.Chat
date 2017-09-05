@@ -321,6 +321,8 @@ Template.room.events({
 	},
 
 	'click .iframe-toolbar .popout'() {
+		window.fireMoneEvent(roomType(Session.get('currentRoomType')), 'chat_widget', 'popout',
+			{ room_name: Session.get('currentRoomName') });
 		window.open(location.href);
 	},
 
@@ -526,9 +528,6 @@ Template.room.events({
 					id: this._id,
 					name: roomData.name,
 					type: roomData.t});
-				window.fireMoneEvent(window.roomType(roomData.t), 'chat_thread', 'load_more',
-					{room_name: roomData.name});
-
 				return RoomHistoryManager.getMore(this._id);
 			} else if (RoomHistoryManager.hasMoreNext(this._id) === true && e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
 				return RoomHistoryManager.getMoreNext(this._id);

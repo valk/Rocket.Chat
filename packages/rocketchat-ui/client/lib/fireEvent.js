@@ -20,14 +20,14 @@ window.roomType = function _roomType(key) {
 	return key === 'd' ? 'direct_msg' : 'group';
 };
 
-window.fireMoneEvent = function _fireMoneEvent(type, source, action, data) {
+window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 	const params = {
-		type: type,
-		source: source,
-		action: action
+		type: t,
+		source: s,
+		action: a
 	};
-	if (data) {
-		params['data'] = data;
+	if (d) {
+		params['data'] = d;
 	}
 	$.ajax({
 		type: 'POST',
