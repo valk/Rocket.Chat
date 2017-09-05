@@ -321,6 +321,8 @@ Template.room.events({
 	},
 
 	'click .iframe-toolbar .popout'() {
+		window.fireMoneEvent(window.roomType(Session.get('currentRoomType')), 'chat_widget', 'popout',
+			{ room_name: Session.get('currentRoomName') });
 		window.open(location.href);
 	},
 
