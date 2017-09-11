@@ -18,4 +18,16 @@ describe('[User Creation]', function() {
 		// This Can Cause Timeouts erros if the server is slow so it should have a big wait
 		loginPage.emailOrUsernameField.waitForVisible(15000);
 	});
+
+	it('it should create user', () => {
+		loginPage.gotToRegister();
+
+		loginPage.registerNewUser({username, email, password});
+
+		loginPage.inputUsername.waitForExist(5000);
+
+		loginPage.submitButton.click();
+
+		mainContent.mainContent.waitForExist(5000);
+	});
 });
