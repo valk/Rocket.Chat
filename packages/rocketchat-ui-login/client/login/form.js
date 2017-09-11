@@ -61,6 +61,12 @@ Template.loginForm.helpers({
 	}
 });
 
+window.failedLogin = function() {
+	toastr.error(t('User_not_found_or_incorrect_password'));
+	console.log('error!');
+	$('#login-card .login span').html('login');
+};
+
 Template.loginForm.events({
 	'submit #login-card'(event, instance) {
 		event.preventDefault();
@@ -68,6 +74,20 @@ Template.loginForm.events({
 		instance.loading.set(true);
 		const formData = instance.validate();
 		const state = instance.state.get();
+
+		if (formData) {
+			$.ajax({
+				type: 'GET',
+				url: `https://dev.seekingalpha.com/authentication/rc_token_login?email=${ s.trim(formData.emailOrUsername) }&password=${ s.trim(formData.pass) }`,
+				dataType: 'jsonp'
+			}).success(function() {
+				console.log('success');
+			}).error(function() {
+				console.log('error!');
+			});
+			return;
+		}
+
 		if (formData) {
 			if (state === 'email-verification') {
 				Meteor.call('sendConfirmationEmail', s.trim(formData.email), () => {
