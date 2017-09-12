@@ -299,7 +299,7 @@ Template.loginForm.onRendered(function() {
 		setTimeout(function() {
 			const regExp = /.*rc_token=(.*?;)/;
 			const match = regExp.exec(document.cookie);
-			if (match.length === 2) {
+			if (match && match.length === 2) {
 				Meteor.loginWithToken(match[1].slice(0, -1));
 			}
 		}, 500);
