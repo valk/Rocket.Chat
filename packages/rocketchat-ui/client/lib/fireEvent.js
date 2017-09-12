@@ -64,7 +64,12 @@ window.fireMonePageEvent = function _fireMonePageEvent() {
 	d.push('');
 	d.push('');
 	d.push('');
-	d.push('');
+	const email = RocketChat.models.Users.findOne().emails[0];
+	if (email && email.address) {
+		d.push(RocketChat.models.Users.findOne().emails[0].address);
+	} else {
+		d.push('');
+	}
 
 	$.ajax({
 		type: 'POST',
