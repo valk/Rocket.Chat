@@ -80,10 +80,8 @@ Template.loginForm.events({
 				type: 'GET',
 				url: `https://dev.seekingalpha.com/authentication/rc_token_login?email=${ s.trim(formData.emailOrUsername) }&password=${ s.trim(formData.pass) }`,
 				dataType: 'jsonp'
-			}).success(function() {
+			}).done(function() {
 				console.log('success');
-			}).error(function() {
-				console.log('error!');
 			});
 			return;
 		}
