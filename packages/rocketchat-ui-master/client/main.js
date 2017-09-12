@@ -304,6 +304,5 @@ Template.main.onRendered(function() {
 Meteor.startup(function() {
 	window.fireMoneEvent('chat_screen', 'rocketchat', 'startup',
 		{url: location.href});
-	window.fireMonePageEvent();
 	return fireGlobalEvent('startup', true);
 });

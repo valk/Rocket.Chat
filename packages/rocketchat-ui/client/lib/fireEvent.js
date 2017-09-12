@@ -27,6 +27,10 @@ window.getPageKey = function _getPageKey() {
 	}
 	key = (Math.floor(new Date().getTime()/1000)*1000+Math.floor(Math.random()*1000)).toString(36);
 	Session.set('sa-page-key', key);
+	$.getJSON("https://jsonip.com/?callback=?", function (data) {
+		window.fireMonePageEvent(data.ip);
+	});
+
 	return key;
 };
 
@@ -47,10 +51,8 @@ window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 	});
 };
 
-window.fireMonePageEvent = function _fireMonePageEvent() {
-	if (!Meteor.userId()) {
-		return;
-	}
+window.fireMonePageEvent = function _fireMonePageEvent(ip) {
+	const user = RocketChat.models.Users.findOne();
 	const d = [];
 	d.push(2);
 	d.push('rocketchat');
@@ -59,17 +61,12 @@ window.fireMonePageEvent = function _fireMonePageEvent() {
 	d.push('');
 	d.push('rc.seekingalpha.com');
 	d.push('');
-	d.push(Meteor.userId());
+	d.push(ip);
 	d.push('');
 	d.push('');
 	d.push('');
 	d.push('');
-	const email = RocketChat.models.Users.findOne().emails[0];
-	if (email && email.address) {
-		d.push(RocketChat.models.Users.findOne().emails[0].address);
-	} else {
-		d.push('');
-	}
+	d.push(user ? user.emails[0].address : '');
 
 	$.ajax({
 		type: 'POST',
