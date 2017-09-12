@@ -45,7 +45,10 @@
 						</div>
 					</li>
 					<li class="desktop-notifications">
-						<label>{{_ "Desktop"}} (on pop-out full screen mode only)</label>
+						<label class="title">{{_ "Desktop"}} <span style="font-weight:normal;">(on pop-out full screen mode only)</span></label>
+						{{#unless editing 'desktopNotifications' }}
+							<i class="icon-pencil" data-edit="desktopNotifications"></i>
+						{{/unless}}
 						<div>
 							{{#if editing 'desktopNotifications'}}
 								<label><input type="radio" name="desktopNotifications" value="default" checked="{{$eq desktopNotifications 'default'}}" /> {{_ "Default"}} ({{_ defaultDesktopNotification}})</label>
@@ -62,7 +65,7 @@
 								<button type="button" class="button cancel">{{_ "Cancel"}}</button>
 								<button type="button" class="button primary save">{{_ "Save"}}</button>
 							{{else}}
-								<span class="current-setting">{{subValue 'desktopNotifications'}} <i class="icon-pencil" data-edit="desktopNotifications"></i></span>
+								<span class="current-setting">{{subValue 'desktopNotifications'}}</span>
 							{{/if}}
 						</div>
 					</li>
