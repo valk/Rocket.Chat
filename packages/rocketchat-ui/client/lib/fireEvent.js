@@ -27,7 +27,7 @@ window.getPageKey = function _getPageKey() {
 	}
 	key = (Math.floor(new Date().getTime()/1000)*1000+Math.floor(Math.random()*1000)).toString(36);
 	Session.set('sa-page-key', key);
-	$.getJSON("https://jsonip.com/?callback=?", function (data) {
+	$.getJSON('https://jsonip.com/?callback=?', function(data) {
 		window.fireMonePageEvent(data.ip);
 	});
 
