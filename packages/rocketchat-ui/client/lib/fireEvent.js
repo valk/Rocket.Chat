@@ -20,11 +20,22 @@ window.roomType = function _roomType(key) {
 	return key === 'd' ? 'direct_msg' : 'group';
 };
 
+window.getPageKey = function _getPageKey() {
+	let key = Session.get('sa-page-key');
+	if (key) {
+		return key;
+	}
+	key = (Math.floor(new Date().getTime()/1000)*1000+Math.floor(Math.random()*1000)).toString(36);
+	Session.set('sa-page-key', key);
+	return key;
+};
+
 window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 	const params = {
 		type: t,
 		source: s,
-		action: a
+		action: a,
+		key: window.getPageKey()
 	};
 	if (d) {
 		params['data'] = d;
@@ -36,4 +47,30 @@ window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 	});
 };
 
+window.fireMonePageEvent = function _fireMonePageEvent() {
+	if (!Meteor.userId()) {
+		return;
+	}
+	const d = [];
+	d.push(2);
+	d.push('rocketchat');
+	d.push(window.getPageKey());
+	d.push('');
+	d.push('');
+	d.push('rc.seekingalpha.com');
+	d.push('');
+	d.push(Meteor.userId());
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
 
+	$.ajax({
+		type: 'POST',
+		url: `https://${ location.host.replace('rc.', '') }/mone`,
+		data: {
+			mone: d.join(';;;')
+		}
+	});
+};
