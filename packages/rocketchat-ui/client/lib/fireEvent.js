@@ -22,6 +22,12 @@ window.roomType = function _roomType(key) {
 
 window.getPageKey = function _getPageKey() {
 	let key = Session.get('sa-page-key');
+	if (!Session.get('page-mone-sent')) {
+		const user = RocketChat.models.Users.findOne();
+		if (user) {
+			window.fireMonePageEvent(user);
+		}
+	}
 	if (key) {
 		return key;
 	}
@@ -48,28 +54,31 @@ window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 	});
 };
 
-window.fireMonePageEvent = function _fireMonePageEvent(ip) {
-	const user = RocketChat.models.Users.findOne();
-	const d = [];
-	d.push(2);
-	d.push('rocketchat');
-	d.push(window.getPageKey());
-	d.push('');
-	d.push('');
-	d.push('rc.seekingalpha.com');
-	d.push('');
-	d.push(ip);
-	d.push('');
-	d.push('');
-	d.push('');
-	d.push('');
-	d.push(user ? user.emails[0].address : '');
+window.fireMonePageEvent = function _fireMonePageEvent(user) {
+	$.getJSON('https://jsonip.com/?callback=?', function(data) {
+		const d = [];
+		d.push(2);
+		d.push('rocketchat');
+		d.push(window.getPageKey());
+		d.push('');
+		d.push('');
+		d.push('rc.seekingalpha.com');
+		d.push('');
+		d.push(data.ip);
+		d.push('');
+		d.push('');
+		d.push('');
+		d.push('');
+		d.push(user ? user.emails[0].address : '');
 
-	$.ajax({
-		type: 'POST',
-		url: `https://${ location.host.replace('rc.', '') }/mone`,
-		data: {
-			mone: d.join(';;;')
-		}
+		$.ajax({
+			type: 'POST',
+			url: `https://${ location.host.replace('rc.', '') }/mone`,
+			data: {
+				mone: d.join(';;;')
+			}
+		});
+
 	});
+	Session.set('page-mone-sent', true);
 };
