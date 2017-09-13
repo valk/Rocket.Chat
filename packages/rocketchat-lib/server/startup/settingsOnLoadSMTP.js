@@ -21,7 +21,7 @@ const buildMailURL = _.debounce(function() {
 			process.env.MAIL_URL += '&secure=false&ignoreTLS=true';
 		}
 
-		if (RocketChat.settings.get('SMTP_Protocol') === 'smtps' && RocketChat.settings.get('SMTP_TLS') === 'require') {
+		if (RocketChat.settings.get('SMTP_Protocol') === 'smtp' && RocketChat.settings.get('SMTP_TLS') === 'require') {
 			console.log('SMTP REQUIRED');
 			process.env.MAIL_URL += '&requireTLS=true';
 		}
