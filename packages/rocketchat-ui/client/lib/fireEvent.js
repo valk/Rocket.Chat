@@ -22,12 +22,6 @@ window.roomType = function _roomType(key) {
 
 window.getPageKey = function _getPageKey() {
 	let key = Session.get('sa-page-key');
-	if (!Session.get('page-mone-sent')) {
-		const user = RocketChat.models.Users.findOne();
-		if (user) {
-			window.fireMonePageEvent(user);
-		}
-	}
 	if (key) {
 		return key;
 	}
@@ -54,31 +48,36 @@ window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 	});
 };
 
-window.fireMonePageEvent = function _fireMonePageEvent(user) {
-	$.getJSON('https://jsonip.com/?callback=?', function(data) {
-		const d = [];
-		d.push(2);
-		d.push('rocketchat');
-		d.push(window.getPageKey());
-		d.push('');
-		d.push('');
-		d.push('rc.seekingalpha.com');
-		d.push('');
-		d.push(data.ip);
-		d.push('');
-		d.push('');
-		d.push('');
-		d.push('');
-		d.push(user ? user.emails[0].address : '');
+window.getMachineCookie = function _getMachineCookie() {
+	if (!localStorage.machineCookie) {
+		localStorage.machineCookie = Math.round((new Date()).getTime() + Math.random() * 1000000003366).toString();
+	}
+	return localStorage.machineCookie;
+};
 
-		$.ajax({
-			type: 'POST',
-			url: `https://${ location.host.replace('rc.', '') }/mone`,
-			data: {
-				mone: d.join(';;;')
-			}
-		});
+window.fireMonePageEvent = function _fireMonePageEvent() {
+	const d = [];
+	d.push(2);
+	d.push('rocketchat');
+	d.push(window.getPageKey());
+	d.push('');
+	d.push('');
+	d.push('rc.seekingalpha.com');
+	d.push('');
+	d.push(window.getMachineCookie());
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push(Meteor.userId());
 
+	$.ajax({
+		type: 'POST',
+		url: `https://${ location.host.replace('rc.', '') }/mone`,
+		data: {
+			mone: d.join(';;;')
+		}
 	});
+
 	Session.set('page-mone-sent', true);
 };
