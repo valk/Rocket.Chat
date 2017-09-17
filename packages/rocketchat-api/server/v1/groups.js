@@ -4,6 +4,12 @@ function findPrivateGroupByIdOrName({ params, userId, checkedArchived = true }) 
 		throw new Meteor.Error('error-roomid-param-not-provided', 'The parameter "roomId" or "roomName" is required');
 	}
 
+	if (RocketChat.models.Users.findOneById(userId).roles.indexOf('admin') > -1 ||
+			RocketChat.models.Users.findOneById(userId).roles.indexOf('admin-bot') > -1) { //CHANGE TO ADMIN-BOT
+		const room = RocketChat.models.Rooms.findOneByIdOrName(params.roomName || params.roomId);
+		return { rid: room._id, name: room.name };
+	}
+
 	let roomSub;
 	if (params.roomId) {
 		roomSub = RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(params.roomId, userId);
