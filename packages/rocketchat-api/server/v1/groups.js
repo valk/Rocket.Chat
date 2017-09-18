@@ -1,17 +1,17 @@
 //Returns the private group subscription IF found otherwise it will return the failure of why it didn't. Check the `statusCode` property
-function findPrivateGroupByIdOrName({ params, userId, checkedArchived = true }) {
+function findPrivateGroupByIdOrName({ params, userId, checkedArchived = true, subscription = false }) {
 	if ((!params.roomId || !params.roomId.trim()) && (!params.roomName || !params.roomName.trim())) {
 		throw new Meteor.Error('error-roomid-param-not-provided', 'The parameter "roomId" or "roomName" is required');
 	}
 
-	if (RocketChat.models.Users.findOneById(userId).roles.indexOf('admin') > -1 ||
-			RocketChat.models.Users.findOneById(userId).roles.indexOf('admin-bot') > -1) { //CHANGE TO ADMIN-BOT
-		const room = RocketChat.models.Rooms.findOneByIdOrName(params.roomName || params.roomId);
-		return { rid: room._id, name: room.name };
-	}
-
+	const roles = RocketChat.models.Users.findOneById(userId).roles;
 	let roomSub;
-	if (params.roomId) {
+	if ((!subscription) && (roles.indexOf('admin') > -1 || roles.indexOf('admin-bot') > -1)) { //CHANGE TO ADMIN-BOT
+		roomSub = RocketChat.models.Rooms.findOneByIdOrName(params.roomName || params.roomId);
+		if (roomSub) {
+			roomSub.rid = roomSub._id;
+		}
+	} else if (params.roomId) {
 		roomSub = RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(params.roomId, userId);
 	} else if (params.roomName) {
 		roomSub = RocketChat.models.Subscriptions.findOneByRoomNameAndUserId(params.roomName, userId);
@@ -97,7 +97,7 @@ RocketChat.API.v1.addRoute('groups.archive', { authRequired: true }, {
 
 RocketChat.API.v1.addRoute('groups.close', { authRequired: true }, {
 	post() {
-		const findResult = findPrivateGroupByIdOrName({ params: this.requestParams(), userId: this.userId, checkedArchived: false });
+		const findResult = findPrivateGroupByIdOrName({ params: this.requestParams(), userId: this.userId, checkedArchived: false, subscription: true });
 
 		if (!findResult.open) {
 			return RocketChat.API.v1.failure(`The private group, ${ findResult.name }, is already closed to the sender`);
