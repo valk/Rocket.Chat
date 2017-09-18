@@ -314,6 +314,22 @@ RocketChat.API.v1.addRoute('groups.list', { authRequired: true }, {
 	}
 });
 
+RocketChat.API.v1.addRoute('groups.listAll', { authRequired: true }, {
+	get() {
+		const { query } = this.parseJsonQuery();
+		const roles = RocketChat.models.Users.findOneById(this.userId).roles;
+		if (roles.indexOf('admin') == -1 && roles.indexOf('admin-bot') == -1) {
+			return RocketChat.API.v1.failure('User is not an admin');
+		}
+		const rooms = RocketChat.models.Rooms.find(query).fetch();
+		return RocketChat.API.v1.success({
+			groups: rooms,
+			total: rooms.length
+		});
+	}
+});
+
+
 RocketChat.API.v1.addRoute('groups.online', { authRequired: true }, {
 	get() {
 		const { query } = this.parseJsonQuery();
