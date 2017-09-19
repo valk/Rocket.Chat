@@ -31,7 +31,7 @@ RocketChat.API.v1.addRoute('users.create', { authRequired: true }, {
 		}
 
 		if (this.bodyParams.settings) {
-			RocketChat.models.Users.setPreferences(this.bodyParams.userId, this.bodyParams.settings);
+			RocketChat.models.Users.setPreferences(newUserId, this.bodyParams.settings);
 		}
 
 		if (typeof this.bodyParams.active !== 'undefined') {
