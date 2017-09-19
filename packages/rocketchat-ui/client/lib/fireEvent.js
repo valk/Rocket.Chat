@@ -44,7 +44,9 @@ window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 	$.ajax({
 		type: 'POST',
 		url: `https://${ location.host.replace('rc.', '') }/mone_event`,
-		data: params
+		data: params,
+		crossDomain: true,
+		dataType: 'json'
 	});
 };
 
@@ -56,6 +58,10 @@ window.getMachineCookie = function _getMachineCookie() {
 };
 
 window.fireMonePageEvent = function _fireMonePageEvent() {
+	Session.set('page-mone-sent', true);
+	if (window.top === window) {
+		return;
+	}
 	const d = [];
 	d.push(2);
 	d.push('rocketchat');
@@ -78,6 +84,4 @@ window.fireMonePageEvent = function _fireMonePageEvent() {
 			mone: d.join(';;;')
 		}
 	});
-
-	Session.set('page-mone-sent', true);
 };

@@ -11,7 +11,8 @@ RocketChat.API.v1.addRoute('users.create', { authRequired: true }, {
 			requirePasswordChange: Match.Maybe(Boolean),
 			sendWelcomeEmail: Match.Maybe(Boolean),
 			verified: Match.Maybe(Boolean),
-			customFields: Match.Maybe(Object)
+			customFields: Match.Maybe(Object),
+			settings: Match.Maybe(Object)
 		});
 
 		//New change made by pull request #5152
@@ -29,6 +30,9 @@ RocketChat.API.v1.addRoute('users.create', { authRequired: true }, {
 			RocketChat.saveCustomFieldsWithoutValidation(newUserId, this.bodyParams.customFields);
 		}
 
+		if (this.bodyParams.settings) {
+			RocketChat.models.Users.setPreferences(this.bodyParams.userId, this.bodyParams.settings);
+		}
 
 		if (typeof this.bodyParams.active !== 'undefined') {
 			Meteor.runAsUser(this.userId, () => {
@@ -270,7 +274,8 @@ RocketChat.API.v1.addRoute('users.update', { authRequired: true }, {
 				requirePasswordChange: Match.Maybe(Boolean),
 				sendWelcomeEmail: Match.Maybe(Boolean),
 				verified: Match.Maybe(Boolean),
-				customFields: Match.Maybe(Object)
+				customFields: Match.Maybe(Object),
+				settings: Match.Maybe(Object)
 			})
 		});
 
@@ -280,6 +285,10 @@ RocketChat.API.v1.addRoute('users.update', { authRequired: true }, {
 
 		if (this.bodyParams.data.customFields) {
 			RocketChat.saveCustomFields(this.bodyParams.userId, this.bodyParams.data.customFields);
+		}
+
+		if (this.bodyParams.data.settings) {
+			RocketChat.models.Users.setPreferences(this.bodyParams.userId, this.bodyParams.data.settings);
 		}
 
 		if (typeof this.bodyParams.data.active !== 'undefined') {

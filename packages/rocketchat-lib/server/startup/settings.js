@@ -772,14 +772,22 @@ RocketChat.settings.addGroup('Email', function() {
 			env: true,
 			i18nLabel: 'Port'
 		});
-		this.add('SMTP_IgnoreTLS', false, {
-			type: 'boolean',
+		this.add('SMTP_TLS', false, {
+			type: 'select',
+			values: [
+				{
+					key: 'ignore',
+					i18nLabel: 'Ignore TLS'
+				}, {
+					key: 'require',
+					i18nLabel: 'Require TLS'
+				}, {
+					key: 'opportunistic',
+					i18nLabel: 'Opportunistic TLS'
+				}
+			],
 			env: true,
-			i18nLabel: 'IgnoreTLS',
-			enableQuery: {
-				_id: 'SMTP_Protocol',
-				value: 'smtp'
-			}
+			i18nLabel: 'TLS'
 		});
 		this.add('SMTP_Pool', true, {
 			type: 'boolean',
