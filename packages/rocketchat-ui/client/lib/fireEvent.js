@@ -43,7 +43,7 @@ window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 	}
 	$.ajax({
 		type: 'POST',
-		url: `https://${ location.host.replace('rc.', '') }/mone_event`,
+		url: `https://${ location.host }/mone_event`,
 		data: params,
 		crossDomain: true,
 		dataType: 'json'
@@ -79,11 +79,9 @@ window.fireMonePageEvent = function _fireMonePageEvent() {
 
 	$.ajax({
 		type: 'POST',
-		url: `https://${ location.host.replace('rc.', '') }/mone`,
+		url: `https://${ location.host }/mone`,
 		data: {
 			mone: d.join(';;;')
 		}
 	});
-
-
 };
