@@ -36,10 +36,11 @@ window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 		type: t,
 		source: s,
 		action: a,
+		version: 2,
 		key: window.getPageKey()
 	};
 	if (d) {
-		params['data'] = d;
+		params['data'] = JSON.stringify(d);
 	}
 	$.ajax({
 		type: 'POST',
