@@ -77,12 +77,19 @@ window.fireMonePageEvent = function _fireMonePageEvent() {
 	d.push('');
 	d.push('');
 	d.push(Meteor.userId());
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
 
 	$.ajax({
 		type: 'POST',
 		url: `https://${ location.host }/mone`,
 		data: {
-			mone: d.join(';;;')
+			mone: `${ d.join(';;;') } `
 		}
 	});
 };
