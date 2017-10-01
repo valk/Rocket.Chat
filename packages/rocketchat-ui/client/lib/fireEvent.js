@@ -20,6 +20,10 @@ window.roomType = function _roomType(key) {
 	return key === 'd' ? 'direct_msg' : 'group';
 };
 
+window.setPageKey = function _setPageKey(key) {
+	Session.set('sa-page-key', key);
+};
+
 window.getPageKey = function _getPageKey() {
 	let key = Session.get('sa-page-key');
 	if (key) {
