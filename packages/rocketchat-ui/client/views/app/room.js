@@ -296,7 +296,7 @@ Template.room.helpers({
 		return { buttons };
 	},
 	hideLeaderHeader() {
-		return Template.instance().hideLeaderHeader.get() || (Template.instance().unreadCount.curValue > 0) ?
+		return (Template.instance().hideLeaderHeader.get() || (Template.instance().unreadCount.curValue > 0)) ?
 			'animated-hidden' : '';
 	},
 	hasLeader() {
