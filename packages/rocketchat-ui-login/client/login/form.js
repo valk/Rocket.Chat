@@ -76,12 +76,12 @@ Template.loginForm.events({
 		const state = instance.state.get();
 
 		if (formData && RocketChat.settings.get('Accounts_SALogin')) {
-			$.ajax({
-				type: 'GET',
-				url: `${ location.origin.replace('rc.', '') }/authentication/rc_token_login?email=${ s.trim(formData.emailOrUsername) }&password=${ s.trim(formData.pass) }`,
-				dataType: 'jsonp'
-			}).done(function() {
-				console.log('success');
+			$.post(`${ location.origin.replace('rc.', '') }/authentication/rc_token_login?email=${ s.trim(formData.emailOrUsername) }&password=${ s.trim(formData.pass) }`)
+				.done(function(res) {
+					console.log('success');
+					if (!res.error) {
+						Meteor.loginWithToken(res.rc_token);
+					}
 			});
 			return;
 		}
