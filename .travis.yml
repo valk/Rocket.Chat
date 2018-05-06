@@ -51,9 +51,11 @@ before_script:
 - |-
   mongo --eval 'rs.initiate({_id:"rs0", members: [{"_id":1, "host":"localhost:27017"}]})'
 - meteor npm run lint
-- meteor npm run testunit
 - meteor npm run stylelint
-- travis_retry meteor build --headless /tmp/build
+- meteor npm run testunit
+- |-
+  meteor add rocketchat:lib || true
+- travis_wait meteor build --server-only /tmp/build
 - mkdir /tmp/build-test
 - tar -xf /tmp/build/Rocket.Chat.tar.gz -C /tmp/build-test/
 - cd /tmp/build-test/bundle/programs/server
