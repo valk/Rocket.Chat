@@ -82,7 +82,7 @@ Template.loginForm.events({
 					if (!res.error) {
 						Meteor.loginWithToken(res.rc_token);
 					}
-			});
+				});
 			return;
 		}
 
