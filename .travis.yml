@@ -6,6 +6,7 @@ branches:
   only:
   - staging
   - production
+  - rc_update
 git:
   depth: 1
 node_js:
@@ -99,6 +100,20 @@ deploy:
     on:
       repo: seekingalpha/Rocket.Chat
       branch: staging
+
+  - provider: s3
+    access_key_id: "$ACCESSID"
+    secret_access_key: "$ACCESSKEY"
+    bucket: seekingalpha-public-staging
+    region: us-west-2
+    skip_cleanup: true
+    local-dir: "$ROCKET_DEPLOY_DIR"
+    upload-dir: rocket-chat-update
+    acl: public_read
+    on:
+      repo: seekingalpha/Rocket.Chat
+      branch: rc_update
+
 env:
   global:
   - DISPLAY=:99.0
