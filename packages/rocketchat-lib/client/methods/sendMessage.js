@@ -1,6 +1,8 @@
+import s from 'underscore.string';
+
 Meteor.methods({
 	sendMessage(message) {
-		if (!Meteor.userId() || _.trim(message.msg) === '') {
+		if (!Meteor.userId() || s.trim(message.msg) === '') {
 			return false;
 		}
 		const user = Meteor.user();
@@ -13,14 +15,9 @@ Meteor.methods({
 			message.u.name = user.name;
 		}
 		message.temp = true;
-
-		message.room = RocketChat.models.Rooms.findOne({_id: message.rid});
-		if (message.room.t === 'd') {
-			message.recipient = message.rid.replace(message.u._id, '');
+		if (RocketChat.settings.get('Message_Read_Receipt_Enabled')) {
+			message.unread = true;
 		}
-		window.fireGlobalEvent('sent-message', message);
-		window.fireMoneEvent(window.roomType(message.room.t), 'message', 'sent',
-			{ room_name: Session.get('currentRoomName') });
 		message = RocketChat.callbacks.run('beforeSaveMessage', message);
 		RocketChat.promises.run('onClientMessageReceived', message).then(function(message) {
 			ChatMessage.insert(message);

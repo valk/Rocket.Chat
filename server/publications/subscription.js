@@ -40,9 +40,7 @@ Meteor.methods({
 
 		this.unblock();
 
-		const options = {
-			fields
-		};
+		const options = { fields };
 
 		const records = RocketChat.models.Subscriptions.findByUserId(Meteor.userId(), options).fetch();
 
@@ -61,6 +59,7 @@ Meteor.methods({
 				}).fetch()
 			};
 		}
+
 		return records;
 	}
 });

@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 RocketChat.sendMessage = function(user, message, room, upsert = false) {
 	if (!user || !message || !room._id) {
 		return false;
@@ -29,32 +31,39 @@ RocketChat.sendMessage = function(user, message, room, upsert = false) {
 			});
 		}
 	}
-	message = RocketChat.callbacks.run('beforeSaveMessage', message);
-	// Avoid saving sandstormSessionId to the database
-	let sandstormSessionId = null;
-	if (message.sandstormSessionId) {
-		sandstormSessionId = message.sandstormSessionId;
-		delete message.sandstormSessionId;
-	}
-	if (message._id && upsert) {
-		const _id = message._id;
-		delete message._id;
-		RocketChat.models.Messages.upsert({
-			_id,
-			'u._id': message.u._id
-		}, message);
-		message._id = _id;
-	} else {
-		message._id = RocketChat.models.Messages.insert(message);
+
+	if (RocketChat.settings.get('Message_Read_Receipt_Enabled')) {
+		message.unread = true;
 	}
 
-	/*
-	Defer other updates as their return is not interesting to the user
-	*/
-	Meteor.defer(() => {
-		// Execute all callbacks
-		message.sandstormSessionId = sandstormSessionId;
-		return RocketChat.callbacks.run('afterSaveMessage', message, room, user._id);
-	});
-	return message;
+	message = RocketChat.callbacks.run('beforeSaveMessage', message);
+	if (message) {
+		// Avoid saving sandstormSessionId to the database
+		let sandstormSessionId = null;
+		if (message.sandstormSessionId) {
+			sandstormSessionId = message.sandstormSessionId;
+			delete message.sandstormSessionId;
+		}
+		if (message._id && upsert) {
+			const _id = message._id;
+			delete message._id;
+			RocketChat.models.Messages.upsert({
+				_id,
+				'u._id': message.u._id
+			}, message);
+			message._id = _id;
+		} else {
+			message._id = RocketChat.models.Messages.insert(message);
+		}
+
+		/*
+		Defer other updates as their return is not interesting to the user
+		*/
+		Meteor.defer(() => {
+			// Execute all callbacks
+			message.sandstormSessionId = sandstormSessionId;
+			return RocketChat.callbacks.run('afterSaveMessage', message, room, user._id);
+		});
+		return message;
+	}
 };

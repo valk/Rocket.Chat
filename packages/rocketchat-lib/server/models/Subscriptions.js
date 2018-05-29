@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 class ModelSubscriptions extends RocketChat.models._Base {
 	constructor() {
 		super(...arguments);
@@ -157,6 +159,18 @@ class ModelSubscriptions extends RocketChat.models._Base {
 		return this.find(query);
 	}
 
+	findByRoomIdAndUserIdsOrAllMessages(roomId, userIds) {
+		const query = {
+			rid: roomId,
+			$or: [
+				{ 'u._id': { $in: userIds } },
+				{ emailNotifications: 'all' }
+			]
+		};
+
+		return this.find(query);
+	}
+
 	findUnreadByUserId(userId) {
 		const query = {
 			'u._id': userId,
@@ -166,6 +180,19 @@ class ModelSubscriptions extends RocketChat.models._Base {
 		};
 
 		return this.find(query, { fields: { unread: 1 } });
+	}
+
+	getMinimumLastSeenByRoomId(rid) {
+		return this.db.findOne({
+			rid
+		}, {
+			sort: {
+				ls: 1
+			},
+			fields: {
+				ls: 1
+			}
+		});
 	}
 
 	// UPDATE
@@ -265,6 +292,22 @@ class ModelSubscriptions extends RocketChat.models._Base {
 		};
 
 		return this.update(query, update);
+	}
+
+	setCustomFieldsDirectMessagesByUserId(userId, fields) {
+		const values = {};
+		Object.keys(fields).forEach(key => {
+			values[`customFields.${ key }`] = fields[key];
+		});
+
+		const query = {
+			'u._id': userId,
+			't': 'd'
+		};
+		const update = { $set: values };
+		const options = { 'multi': true };
+
+		return this.update(query, update, options);
 	}
 
 	setFavoriteByRoomIdAndUserId(roomId, userId, favorite) {
@@ -404,7 +447,6 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		return this.update(query, update, { multi: true });
 	}
-
 	setAlertForRoomIdExcludingUserId(roomId, userId) {
 		const query = {
 			rid: roomId,
@@ -423,7 +465,6 @@ class ModelSubscriptions extends RocketChat.models._Base {
 				open: true
 			}
 		};
-
 		return this.update(query, update, { multi: true });
 	}
 
@@ -545,6 +586,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 			rid: room._id,
 			name: room.name,
 			fname: room.fname,
+			customFields: room.customFields,
 			t: room.t,
 			u: {
 				_id: user._id,
