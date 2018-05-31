@@ -81,7 +81,11 @@ Template.loginForm.events({
 		const state = instance.state.get();
 
 		if (formData && RocketChat.settings.get('Accounts_SALogin')) {
-			$.post(`${ location.origin.replace('rc.', '') }/authentication/rc_token_login?email=${ s.trim(formData.emailOrUsername) }&password=${ s.trim(formData.pass) }`)
+			const params = {
+				email: s.trim(formData.emailOrUsername),
+				password: s.trim(formData.pass)
+			};
+			$.post(`${ location.origin.replace('rc.', '') }/authentication/rc_token_login`, params)
 				.done(function(res) {
 					console.log('success');
 					if (!res.error) {
