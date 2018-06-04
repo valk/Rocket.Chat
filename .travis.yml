@@ -67,7 +67,7 @@ before_script:
 - mongo meteor --eval 'db.getCollectionNames()'
 script:
 - travis_retry npm test
-- mongo meteor --eval 'db.dropDatabase()'
+- meteor mongo --eval 'db.dropDatabase()'
 - unset MONGO_OPLOG_URL
 - travis_retry npm test
 before_deploy:
