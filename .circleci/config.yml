@@ -222,7 +222,7 @@ jobs:
             if [[ $CIRCLE_PULL_REQUESTS ]]; then exit 0; fi;
 
             sudo apt-get -y -qq update
-            sudo apt-get -y -qq install python3.4-dev
+            sudo apt-get -y -qq install python3.4-dev jq
             curl -O https://bootstrap.pypa.io/get-pip.py
             python3.4 get-pip.py --user
             export PATH=~/.local/bin:$PATH
@@ -235,47 +235,33 @@ jobs:
 
             export PATH=~/.local/bin:$PATH
             export CIRCLE_TAG=${CIRCLE_TAG:=}
+            export CIRCLE_BRANCH=${CIRCLE_BRANCH:=}
 
             source .circleci/setartname.sh
             source .circleci/setdeploydir.sh
-            bash .circleci/setupsig.sh
+            source .circleci/set_s3_params.sh
             bash .circleci/namefiles.sh
-            # echo ".circleci/sandstorm.sh"
 
-            aws s3 cp $ROCKET_DEPLOY_DIR/ s3://download.rocket.chat/build/ --recursive
-
-            bash .circleci/update-releases.sh
-            bash .circleci/docker.sh
-            bash .circleci/snap.sh
-            bash .circleci/redhat-registry.sh
+            aws s3 cp $ROCKET_DEPLOY_DIR/ s3://$AWS_BUCKET/$UPLOAD_DIR/ --recursive
 
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$/
+      - build
       - test-with-oplog:
           requires:
             - build
-          filters:
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$/
       - test-without-oplog:
           requires:
             - build
-          filters:
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$/
       - deploy:
           requires:
             - test-with-oplog
             - test-without-oplog
           filters:
             branches:
-              only: develop
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$/
-
+              only:
+                - production
+                - staging
+                - rc_update
