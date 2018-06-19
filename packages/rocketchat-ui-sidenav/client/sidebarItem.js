@@ -47,7 +47,7 @@ Template.sidebarItem.onCreated(function() {
 		if (instance.timeAgoInterval) {
 			Meteor.clearInterval(instance.timeAgoInterval);
 		}
-		
+
 		if (!(ts instanceof Date)) {
 			return;
 		}
