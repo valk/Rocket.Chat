@@ -81,7 +81,7 @@ window.fireMonePageEvent = function _fireMonePageEvent() {
 			d.push(RocketChat.models.Users.findOne(Meteor.userId()).customFields.sa_id); //user_id
 			d.push(''); //user_nick
 			d.push(''); //user_email
-			d.push(null); //user_vocation
+			d.push(''); //user_vocation
 			d.push(''); //author_slug
 			d.push(''); //user_mywebsite_url
 			d.push(''); //gigya_notified_login
