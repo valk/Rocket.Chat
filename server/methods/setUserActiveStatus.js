@@ -19,30 +19,30 @@ Meteor.methods({
 
 		if (user) {
 			/** This code should be commented out to prevent sending 'Account Approved' email */
-				// RocketChat.models.Users.setUserActive(userId, active);
+			// RocketChat.models.Users.setUserActive(userId, active);
 
-				// if (user.username) {
-				// 	RocketChat.models.Subscriptions.setArchivedByUsername(user.username, !active);
-				// }
+			// if (user.username) {
+			// 	RocketChat.models.Subscriptions.setArchivedByUsername(user.username, !active);
+			// }
 
-				// if (active === false) {
-				// 	RocketChat.models.Users.unsetLoginTokens(userId);
-				// } else {
-				// 	RocketChat.models.Users.unsetReason(userId);
-				// }
+			// if (active === false) {
+			// 	RocketChat.models.Users.unsetLoginTokens(userId);
+			// } else {
+			// 	RocketChat.models.Users.unsetReason(userId);
+			// }
 
-				// const destinations = Array.isArray(user.emails) && user.emails.map(email => `${ user.name || user.username }<${ email.address }>`);
+			// const destinations = Array.isArray(user.emails) && user.emails.map(email => `${ user.name || user.username }<${ email.address }>`);
 
-				// if (destinations) {
-				// 	const email = {
-				// 		to: destinations,
-				// 		from: RocketChat.settings.get('From_Email'),
-				// 		subject: Accounts.emailTemplates.userActivated.subject({active}),
-				// 		html: Accounts.emailTemplates.userActivated.html({active, name: user.name, username: user.username})
-				// 	};
+			// if (destinations) {
+			// 	const email = {
+			// 		to: destinations,
+			// 		from: RocketChat.settings.get('From_Email'),
+			// 		subject: Accounts.emailTemplates.userActivated.subject({active}),
+			// 		html: Accounts.emailTemplates.userActivated.html({active, name: user.name, username: user.username})
+			// 	};
 
-				// 	Meteor.defer(() => Email.send(email));
-				// }
+			// 	Meteor.defer(() => Email.send(email));
+			// }
 
 			return true;
 		}

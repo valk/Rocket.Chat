@@ -63,40 +63,40 @@ window.getMachineCookie = function _getMachineCookie() {
 };
 
 window.fireMonePageEvent = function _fireMonePageEvent() {
-	window.setTimeout(function(){
-			Session.set('page-mone-sent', true);
-			if (window.top !== window) {
-				return;
-			}
-			const d = [];
-			d.push(2); //Version
-			d.push('rocketchat'); //Mone Type
-			d.push(window.getPageKey()); //page_key
-			d.push(''); //referrer_key
-			d.push(''); //referrer
-			d.push('rc.seekingalpha.com'); //url
-			d.push(''); //url_params
-			d.push(window.getMachineCookie()); //machine_cookie
-			d.push(''); //session_cookie
-			d.push(RocketChat.models.Users.findOne(Meteor.userId()).customFields.sa_id); //user_id
-			d.push(''); //user_nick
-			d.push(''); //user_email
-			d.push(''); //user_vocation
-			d.push(''); //author_slug
-			d.push(''); //user_mywebsite_url
-			d.push(''); //gigya_notified_login
-			d.push(''); //user_gigya_settings
-			d.push(''); //user_watchlist_slugs
-			d.push(''); //user_non_watchlist_slugs
-			d.push(''); //user_watchlist_authors
+	window.setTimeout(function() {
+		Session.set('page-mone-sent', true);
+		if (window.top !== window) {
+			return;
+		}
+		const d = [];
+		d.push(2); //Version
+		d.push('rocketchat'); //Mone Type
+		d.push(window.getPageKey()); //page_key
+		d.push(''); //referrer_key
+		d.push(''); //referrer
+		d.push('rc.seekingalpha.com'); //url
+		d.push(''); //url_params
+		d.push(window.getMachineCookie()); //machine_cookie
+		d.push(''); //session_cookie
+		d.push(RocketChat.models.Users.findOne(Meteor.userId()).customFields.sa_id); //user_id
+		d.push(''); //user_nick
+		d.push(''); //user_email
+		d.push(''); //user_vocation
+		d.push(''); //author_slug
+		d.push(''); //user_mywebsite_url
+		d.push(''); //gigya_notified_login
+		d.push(''); //user_gigya_settings
+		d.push(''); //user_watchlist_slugs
+		d.push(''); //user_non_watchlist_slugs
+		d.push(''); //user_watchlist_authors
 
-			$.ajax({
-				type: 'POST',
-				url: `https://${ location.host }/mone`,
-				data: {
-					mone: `${ d.join(';;;') } `
-				}
-			});
+		$.ajax({
+			type: 'POST',
+			url: `https://${ location.host }/mone`,
+			data: {
+				mone: `${ d.join(';;;') } `
+			}
+		});
 	});
 
 };
