@@ -97,7 +97,7 @@ function queueSendMone() {
 			}
 		});
 	}
-};
+}
 
 window.fireMonePageEvent = function _fireMonePageEvent() {
 	window.setTimeout(function() {
