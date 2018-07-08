@@ -30,7 +30,7 @@ Meteor.methods({
 				RocketChat.models.Users.unsetReason(userId);
 			}
 
-			// This code should be commented out to prevent sending 'Account Approved' email
+			// This code should be commented out to prevent sending 'Account Approved' emails
 			// const destinations = Array.isArray(user.emails) && user.emails.map(email => `${ user.name || user.username }<${ email.address }>`);
 
 			// if (destinations) {
