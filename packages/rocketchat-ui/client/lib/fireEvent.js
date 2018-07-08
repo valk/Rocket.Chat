@@ -62,22 +62,11 @@ window.getMachineCookie = function _getMachineCookie() {
 	return localStorage.machineCookie;
 };
 
-window.fireMonePageEvent = function _fireMonePageEvent() {
-	window.setTimeout(function() {
-		Session.set('page-mone-sent', true);
-		if (window.top !== window) {
-			return;
-		}
-		queueSendMone();
-	});
-};
-
-
-function queueSendMone(){
+function queueSendMone() {
 	// wait for RC back end to catch up with RC client
-	if (!RocketChat.models.Users.findOne(Meteor.userId())){
+	if (!RocketChat.models.Users.findOne(Meteor.userId())) {
 		window.setTimeout(queueSendMone);
-	}else{
+	} else {
 		const d = [];
 		d.push(2); //Version
 		d.push('rocketchat'); //Mone Type
@@ -108,4 +97,14 @@ function queueSendMone(){
 			}
 		});
 	}
-}
+};
+
+window.fireMonePageEvent = function _fireMonePageEvent() {
+	window.setTimeout(function() {
+		Session.set('page-mone-sent', true);
+		if (window.top !== window) {
+			return;
+		}
+		queueSendMone();
+	});
+};
