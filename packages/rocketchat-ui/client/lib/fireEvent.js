@@ -68,6 +68,16 @@ window.fireMonePageEvent = function _fireMonePageEvent() {
 		if (window.top !== window) {
 			return;
 		}
+		queueSendMone();
+	});
+};
+
+
+function queueSendMone(){
+	// wait for RC back end to catch up with RC client
+	if (!RocketChat.models.Users.findOne(Meteor.userId())){
+		window.setTimeout(queueSendMone);
+	}else{
 		const d = [];
 		d.push(2); //Version
 		d.push('rocketchat'); //Mone Type
@@ -97,6 +107,5 @@ window.fireMonePageEvent = function _fireMonePageEvent() {
 				mone: `${ d.join(';;;') } `
 			}
 		});
-	});
-
-};
+	}
+}
