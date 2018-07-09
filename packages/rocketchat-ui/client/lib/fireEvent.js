@@ -64,7 +64,7 @@ window.getMachineCookie = function _getMachineCookie() {
 
 function queueSendMone() {
 	// wait for RC back end to catch up with RC client
-	let user = RocketChat.models.Users.findOne(Meteor.userId());
+	const user = RocketChat.models.Users.findOne(Meteor.userId());
 
 	if (!user || !user.customFields) {
 		window.setTimeout(queueSendMone);
