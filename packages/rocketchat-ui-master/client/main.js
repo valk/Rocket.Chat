@@ -233,7 +233,7 @@ Meteor.startup(function() {
 	if (window.top === window) {
 		window.fireMonePageEvent();
 		window.fireMoneEvent('chat_screen', 'rocketchat', 'startup',
-			{url: location.href});
+			{ url: location.href });
 	}
 	return fireGlobalEvent('startup', true);
 });

@@ -67,7 +67,7 @@ function openRoom(type, name) {
 			RocketChat.openedRoom = room._id;
 
 			const data = _.omit(room, 'usernames');
-			data['name'] = name;
+			data.name = name;
 			fireGlobalEvent('room-opened', data);
 			Session.set('currentRoomName', data.name);
 			Session.set('currentRoomType', data.t);

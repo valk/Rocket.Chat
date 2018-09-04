@@ -15,7 +15,7 @@ RocketChat.API.v1.addRoute('users.create', { authRequired: true }, {
 			sendWelcomeEmail: Match.Maybe(Boolean),
 			verified: Match.Maybe(Boolean),
 			customFields: Match.Maybe(Object),
-			settings: Match.Maybe(Object)
+			settings: Match.Maybe(Object),
 		});
 
 		// New change made by pull request #5152
@@ -121,9 +121,9 @@ RocketChat.API.v1.addRoute('users.unreadCount', { authRequired: true }, {
 		const unreadCount = RocketChat.models.Subscriptions.findUnreadByUserId(user._id).fetch()[0];
 
 		return RocketChat.API.v1.success({
-			data: unreadCount || {}
+			data: unreadCount || {},
 		});
-	}
+	},
 });
 
 RocketChat.API.v1.addRoute('users.info', { authRequired: true }, {
@@ -279,8 +279,8 @@ RocketChat.API.v1.addRoute('users.update', { authRequired: true }, {
 				sendWelcomeEmail: Match.Maybe(Boolean),
 				verified: Match.Maybe(Boolean),
 				customFields: Match.Maybe(Object),
-				settings: Match.Maybe(Object)
-			})
+				settings: Match.Maybe(Object),
+			}),
 		});
 
 		const userData = _.extend({ _id: this.bodyParams.userId }, this.bodyParams.data);

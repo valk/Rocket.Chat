@@ -1,7 +1,7 @@
 Template.burger.helpers({
 	unread() {
 		const unread = Session.get('unread');
-		window.fireGlobalEvent('unread-messages', {unread_msgs: unread});
+		window.fireGlobalEvent('unread-messages', { unread_msgs: unread });
 		return unread;
 	},
 	isMenuOpen() {

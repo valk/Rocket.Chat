@@ -29,7 +29,7 @@ window.getPageKey = function _getPageKey() {
 	if (key) {
 		return key;
 	}
-	key = (Math.floor(new Date().getTime()/1000)*1000+Math.floor(Math.random()*1000)).toString(36);
+	key = (Math.floor(new Date().getTime() / 1000) * 1000 + Math.floor(Math.random() * 1000)).toString(36);
 	Session.set('sa-page-key', key);
 
 	return key;
@@ -41,17 +41,17 @@ window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 		source: s,
 		action: a,
 		version: 2,
-		key: window.getPageKey()
+		key: window.getPageKey(),
 	};
 	if (d) {
-		params['data'] = JSON.stringify(d);
+		params.data = JSON.stringify(d);
 	}
 	$.ajax({
 		type: 'POST',
 		url: `https://${ location.host }/mone_event`,
 		data: params,
 		crossDomain: true,
-		dataType: 'json'
+		dataType: 'json',
 	});
 };
 
@@ -93,7 +93,7 @@ window.fireMonePageEvent = function _fireMonePageEvent() {
 		type: 'POST',
 		url: `https://${ location.host }/mone`,
 		data: {
-			mone: `${ d.join(';;;') } `
-		}
+			mone: `${ d.join(';;;') } `,
+		},
 	});
 };
