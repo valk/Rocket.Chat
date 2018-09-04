@@ -12,21 +12,19 @@ Template.sideNav.helpers({
 	},
 
 	footer() {
-		return RocketChat.settings.get('Layout_Sidenav_Footer');
+		return String(RocketChat.settings.get('Layout_Sidenav_Footer')).trim();
 	},
 
 	roomType() {
-		return RocketChat.roomTypes.getTypes().map((roomType) => {
-			return {
-				template: roomType.customTemplate || 'roomList',
-				data: {
-					header: roomType.header,
-					identifier: roomType.identifier,
-					isCombined: roomType.isCombined,
-					label: roomType.label
-				}
-			};
-		});
+		return RocketChat.roomTypes.getTypes().map((roomType) => ({
+			template: roomType.customTemplate || 'roomList',
+			data: {
+				header: roomType.header,
+				identifier: roomType.identifier,
+				isCombined: roomType.isCombined,
+				label: roomType.label,
+			},
+		}));
 	},
 
 	loggedInUser() {
@@ -34,13 +32,13 @@ Template.sideNav.helpers({
 	},
 
 	sidebarViewMode() {
-		const viewMode = RocketChat.getUserPreference(Meteor.user(), 'sidebarViewMode');
+		const viewMode = RocketChat.getUserPreference(Meteor.userId(), 'sidebarViewMode');
 		return viewMode ? viewMode : 'condensed';
 	},
 
 	sidebarHideAvatar() {
 		return RocketChat.getUserPreference(Meteor.user(), 'sidebarHideAvatar');
-	}
+	},
 });
 
 Template.sideNav.events({
@@ -59,7 +57,7 @@ Template.sideNav.events({
 
 	'dropped .sidebar'(e) {
 		return e.preventDefault();
-	}
+	},
 });
 
 Template.sideNav.onRendered(function() {
@@ -76,16 +74,15 @@ Template.sideNav.onRendered(function() {
 });
 
 Template.sideNav.onCreated(function() {
-	this.mergedChannels = new ReactiveVar(false);
+	this.groupedByType = new ReactiveVar(false);
 
 	this.autorun(() => {
 		const user = RocketChat.models.Users.findOne(Meteor.userId(), {
 			fields: {
-				'settings.preferences.roomsListExhibitionMode': 1,
-				'settings.preferences.mergeChannels': 1
-			}
+				'settings.preferences.sidebarGroupByType': 1,
+			},
 		});
-		const userPref = RocketChat.getUserPreference(user, 'roomsListExhibitionMode') === 'category' && RocketChat.getUserPreference(user, 'mergeChannels');
-		this.mergedChannels.set(userPref ? userPref : RocketChat.settings.get('UI_Merge_Channels_Groups'));
+		const userPref = RocketChat.getUserPreference(user, 'sidebarGroupByType');
+		this.groupedByType.set(userPref ? userPref : RocketChat.settings.get('UI_Group_Channels_By_Type'));
 	});
 });

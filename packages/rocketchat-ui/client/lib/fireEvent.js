@@ -1,5 +1,5 @@
 window.fireGlobalEvent = function _fireGlobalEvent(eventName, params) {
-	window.dispatchEvent(new CustomEvent(eventName, {detail: params}));
+	window.dispatchEvent(new CustomEvent(eventName, { detail: params }));
 
 	Tracker.autorun((computation) => {
 		const enabled = RocketChat.settings.get('Iframe_Integration_send_enable');
@@ -10,7 +10,7 @@ window.fireGlobalEvent = function _fireGlobalEvent(eventName, params) {
 		if (enabled) {
 			parent.postMessage({
 				eventName,
-				data: params
+				data: params,
 			}, RocketChat.settings.get('Iframe_Integration_send_target_origin'));
 		}
 	});
@@ -29,7 +29,7 @@ window.getPageKey = function _getPageKey() {
 	if (key) {
 		return key;
 	}
-	key = (Math.floor(new Date().getTime()/1000)*1000+Math.floor(Math.random()*1000)).toString(36);
+	key = (Math.floor(new Date().getTime() / 1000) * 1000 + Math.floor(Math.random() * 1000)).toString(36);
 	Session.set('sa-page-key', key);
 
 	return key;
@@ -41,17 +41,17 @@ window.fireMoneEvent = function _fireMoneEvent(t, s, a, d) {
 		source: s,
 		action: a,
 		version: 2,
-		key: window.getPageKey()
+		key: window.getPageKey(),
 	};
 	if (d) {
-		params['data'] = JSON.stringify(d);
+		params.data = JSON.stringify(d);
 	}
 	$.ajax({
 		type: 'POST',
 		url: `https://${ location.host }/mone_event`,
 		data: params,
 		crossDomain: true,
-		dataType: 'json'
+		dataType: 'json',
 	});
 };
 
@@ -62,51 +62,38 @@ window.getMachineCookie = function _getMachineCookie() {
 	return localStorage.machineCookie;
 };
 
-function queueSendMone() {
-	// wait for RC back end to catch up with RC client
-	const user = RocketChat.models.Users.findOne(Meteor.userId());
-
-	if (!user || !user.customFields) {
-		window.setTimeout(queueSendMone);
-	} else {
-		const d = [];
-		d.push(2); //Version
-		d.push('rocketchat'); //Mone Type
-		d.push(window.getPageKey()); //page_key
-		d.push(''); //referrer_key
-		d.push(''); //referrer
-		d.push('rc.seekingalpha.com'); //url
-		d.push(''); //url_params
-		d.push(window.getMachineCookie()); //machine_cookie
-		d.push(''); //session_cookie
-		d.push(RocketChat.models.Users.findOne(Meteor.userId()).customFields.sa_id); //user_id
-		d.push(''); //user_nick
-		d.push(''); //user_email
-		d.push(''); //user_vocation
-		d.push(''); //author_slug
-		d.push(''); //user_mywebsite_url
-		d.push(''); //gigya_notified_login
-		d.push(''); //user_gigya_settings
-		d.push(''); //user_watchlist_slugs
-		d.push(''); //user_non_watchlist_slugs
-		d.push(''); //user_watchlist_authors
-
-		$.ajax({
-			type: 'POST',
-			url: `https://${ location.host }/mone`,
-			data: {
-				mone: `${ d.join(';;;') } `
-			}
-		});
-	}
-}
-
 window.fireMonePageEvent = function _fireMonePageEvent() {
-	window.setTimeout(function() {
-		Session.set('page-mone-sent', true);
-		if (window.top !== window) {
-			return;
-		}
-		queueSendMone();
+	Session.set('page-mone-sent', true);
+	if (window.top !== window) {
+		return;
+	}
+	const d = [];
+	d.push(2);
+	d.push('rocketchat');
+	d.push(window.getPageKey());
+	d.push('');
+	d.push('');
+	d.push('rc.seekingalpha.com');
+	d.push('');
+	d.push(window.getMachineCookie());
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push(Meteor.userId());
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+	d.push('');
+
+	$.ajax({
+		type: 'POST',
+		url: `https://${ location.host }/mone`,
+		data: {
+			mone: `${ d.join(';;;') } `,
+		},
 	});
 };

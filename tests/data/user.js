@@ -16,7 +16,6 @@ export const preferences = {
 		collapseMediaByDefault: false,
 		autoImageLoad: true,
 		emailNotificationMode: 'mentions',
-		roomsListExhibitionMode: 'category',
 		unreadAlert: true,
 		notificationsSoundVolume: 100,
 		desktopNotifications: 'default',
@@ -30,6 +29,6 @@ export const preferences = {
 		hideAvatars: false,
 		hideFlexTab: false,
 		sendOnEnter: 'normal',
-		roomCounterSidebar: false
-	}
+		roomCounterSidebar: false,
+	},
 };

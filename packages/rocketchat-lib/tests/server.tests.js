@@ -3,6 +3,7 @@ import 'babel-polyfill';
 import assert from 'assert';
 
 import PasswordPolicyClass from '../server/lib/PasswordPolicyClass';
+import { messageProperties } from '../lib/MessageProperties';
 
 describe('PasswordPolicyClass', () => {
 	describe('Default options', () => {
@@ -51,7 +52,7 @@ describe('PasswordPolicyClass', () => {
 		it('should not allow non string or empty', () => {
 			const passwordPolice = new PasswordPolicyClass({
 				enabled: true,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate(), false);
@@ -66,7 +67,7 @@ describe('PasswordPolicyClass', () => {
 			const passwordPolice = new PasswordPolicyClass({
 				enabled: true,
 				minLength: 5,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate('1'), false);
@@ -79,7 +80,7 @@ describe('PasswordPolicyClass', () => {
 			const passwordPolice = new PasswordPolicyClass({
 				enabled: true,
 				maxLength: 5,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate('1'), true);
@@ -92,7 +93,7 @@ describe('PasswordPolicyClass', () => {
 			const passwordPolice = new PasswordPolicyClass({
 				enabled: true,
 				forbidRepeatingCharacters: false,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate('1'), true);
@@ -107,7 +108,7 @@ describe('PasswordPolicyClass', () => {
 				enabled: true,
 				forbidRepeatingCharacters: true,
 				forbidRepeatingCharactersCount: 3,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate('1'), true);
@@ -123,7 +124,7 @@ describe('PasswordPolicyClass', () => {
 				enabled: true,
 				forbidRepeatingCharacters: true,
 				forbidRepeatingCharactersCount: 5,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate('1'), true);
@@ -140,7 +141,7 @@ describe('PasswordPolicyClass', () => {
 			const passwordPolice = new PasswordPolicyClass({
 				enabled: true,
 				mustContainAtLeastOneLowercase: true,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate('a'), true);
@@ -156,7 +157,7 @@ describe('PasswordPolicyClass', () => {
 			const passwordPolice = new PasswordPolicyClass({
 				enabled: true,
 				mustContainAtLeastOneUppercase: true,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate('a'), false);
@@ -172,7 +173,7 @@ describe('PasswordPolicyClass', () => {
 			const passwordPolice = new PasswordPolicyClass({
 				enabled: true,
 				mustContainAtLeastOneNumber: true,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate('a'), false);
@@ -189,7 +190,7 @@ describe('PasswordPolicyClass', () => {
 			const passwordPolice = new PasswordPolicyClass({
 				enabled: true,
 				mustContainAtLeastOneSpecialCharacter: true,
-				throwError: false
+				throwError: false,
 			});
 
 			assert.equal(passwordPolice.validate('a'), false);
@@ -201,6 +202,23 @@ describe('PasswordPolicyClass', () => {
 			assert.equal(passwordPolice.validate('AAAaAAA'), false);
 			assert.equal(passwordPolice.validate('AAAa1AAA'), false);
 			assert.equal(passwordPolice.validate('AAAa@AAA'), true);
+		});
+	});
+});
+
+const messages = {
+	'Sample Message': 14,
+	'Sample 1 ⛳': 10,
+	'Sample 2 ❤': 10,
+	'Sample 3 ⛳❤⛳❤': 13,
+};
+
+describe('Message Properties', () => {
+	describe('Check Message Length', () => {
+		Object.keys(messages).forEach((objectKey) => {
+			it('should treat emojis as single characters', () => {
+				assert.equal(messageProperties.length(objectKey), messages[objectKey]);
+			});
 		});
 	});
 });
