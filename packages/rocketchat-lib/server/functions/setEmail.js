@@ -1,6 +1,7 @@
 import s from 'underscore.string';
 
-RocketChat._setEmail = function(userId, email, shouldSendVerificationEmail = true) {
+// shouldSendVerificationEmail should be false to prevent sending verification email
+RocketChat._setEmail = function(userId, email, shouldSendVerificationEmail = false) {
 	email = s.trim(email);
 	if (!userId) {
 		throw new Meteor.Error('error-invalid-user', 'Invalid user', { function: '_setEmail' });
