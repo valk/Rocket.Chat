@@ -14,5 +14,7 @@ Meteor.startup(function() {
 
 	UserPresence.start();
 
-	return UserPresenceMonitor.start();
+	if (process.env.USER_PRESENCE_MONITOR) {
+		return UserPresenceMonitor.start();
+	}
 });
