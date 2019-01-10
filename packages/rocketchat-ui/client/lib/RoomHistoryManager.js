@@ -1,4 +1,6 @@
-/* globals readMessage UserRoles RoomRoles*/
+import { Meteor } from 'meteor/meteor';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Blaze } from 'meteor/blaze';
 import _ from 'underscore';
 
 export const upsertMessage = ({ msg, subscription }) => {
@@ -12,10 +14,14 @@ export const upsertMessage = ({ msg, subscription }) => {
 		(userId && RoomRoles.findOne({ rid: msg.rid, 'u._id': userId })) || {},
 	].map((e) => e.roles);
 	msg.roles = _.union.apply(_.union, roles);
+	if (msg.t === 'e2e' && !msg.file) {
+		msg.e2e = 'pending';
+	}
+
 	return ChatMessage.upsert({ _id: msg._id }, msg);
 };
 
-export const RoomHistoryManager = new class {
+RoomHistoryManager = new class {
 	constructor() {
 		this.defaultLimit = 50;
 		this.histories = {};
@@ -71,6 +77,7 @@ export const RoomHistoryManager = new class {
 			if (err) {
 				return;
 			}
+
 			let previousHeight;
 			const { messages = [] } = result;
 			room.unreadNotLoaded.set(result.unreadNotLoaded);
@@ -265,4 +272,3 @@ export const RoomHistoryManager = new class {
 		}
 	}
 };
-this.RoomHistoryManager = RoomHistoryManager;
