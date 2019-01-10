@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import s from 'underscore.string';
 
 // shouldSendVerificationEmail should be false to prevent sending verification email

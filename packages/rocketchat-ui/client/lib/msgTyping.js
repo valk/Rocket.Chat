@@ -1,3 +1,7 @@
+import { Meteor } from 'meteor/meteor';
+import { Tracker } from 'meteor/tracker';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 import _ from 'underscore';
 
 export const MsgTyping = (function() {
@@ -52,8 +56,8 @@ export const MsgTyping = (function() {
 			clearTimeout(timeouts[room]);
 			timeouts[room] = null;
 		}
-		// const user = Meteor.user();
-		// return RocketChat.Notifications.notifyRoom(room, 'typing', shownName(user), false);
+		const user = Meteor.user();
+		return RocketChat.Notifications.notifyRoom(room, 'typing', shownName(user), false);
 	};
 	const start = function(room) {
 		if (!renew) { return; }
@@ -62,8 +66,8 @@ export const MsgTyping = (function() {
 
 		renew = false;
 		selfTyping.set(true);
-		// const user = Meteor.user();
-		// RocketChat.Notifications.notifyRoom(room, 'typing', shownName(user), true);
+		const user = Meteor.user();
+		RocketChat.Notifications.notifyRoom(room, 'typing', shownName(user), true);
 		clearTimeout(timeouts[room]);
 		return timeouts[room] = Meteor.setTimeout(() => stop(room), timeout);
 	};

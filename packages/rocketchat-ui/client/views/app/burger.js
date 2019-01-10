@@ -1,3 +1,6 @@
+import { Session } from 'meteor/session';
+import { Template } from 'meteor/templating';
+
 Template.burger.helpers({
 	unread() {
 		const unread = Session.get('unread');
