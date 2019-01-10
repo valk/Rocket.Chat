@@ -39,7 +39,7 @@ RocketChat.callbacks.add('beforeSaveMessage', (msg) => {
 
 							msg.attachments = msg.attachments || [];
 
-							/*const*/ index = msg.attachments.findIndex((a) => a.message_link === item.url);
+							/* const */ index = msg.attachments.findIndex((a) => a.message_link === item.url);
 							if (index > -1) {
 								msg.attachments.splice(index, 1);
 							}
