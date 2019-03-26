@@ -70,8 +70,9 @@ openRoom = function(type, name) {
 			Session.set('openedRoom', room._id);
 			RocketChat.openedRoom = room._id;
 
-			fireGlobalEvent('room-opened', _.omit(room, 'usernames'));
-
+			const data = _.omit(room, 'usernames');
+			data.name = name;
+			fireGlobalEvent('room-opened', data);
 			Session.set('editRoomTitle', false);
 			RoomManager.updateMentionsMarksOfRoom(type + name);
 			Meteor.setTimeout(() => readMessage.readNow(), 2000);
