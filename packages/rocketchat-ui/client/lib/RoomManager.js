@@ -67,6 +67,7 @@ RoomManager = new function() {
 											};
 										}
 										msg.name = room.name;
+										msg.u = RocketChat.models.Users.findOne({ _id: msg.u._id });
 										Meteor.defer(() => RoomManager.updateMentionsMarksOfRoom(typeName));
 
 										RocketChat.callbacks.run('streamMessage', msg);
