@@ -6,7 +6,7 @@ jobs:
   build:
     <<: *defaults
     docker:
-      - image: circleci/node:8.11
+      - image: circleci/node:8.11-stretch
 
     steps:
       - checkout
@@ -133,7 +133,7 @@ jobs:
   test-with-oplog:
     <<: *defaults
     docker:
-      - image: circleci/node:8.11-browsers
+      - image: circleci/node:8.11-stretch-browsers
       - image: mongo:3.4
         command: [mongod, --nojournal, --noprealloc, --smallfiles, --replSet=rs0]
 
@@ -151,10 +151,22 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            # Install mongodb-org-shell (MongoDB shell client).
+            # We install the 3.6 client even though the server is running 3.4,
+            # because mongodb.org doesn't provide 3.4 from their APT repos.
+            #
+            # Be sure to use the *Debian*-specific APT folder, not the *Ubuntu* one,
+            # since the Docker image runs Debian and there are subtle incompatibilities
+            # re: which versionized package-names are provided (libssl1.1 vs. libssl1.0.0).
+            #
+            # See https://docs.mongodb.com/v3.6/tutorial/install-mongodb-on-debian/
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/3.6 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+
+
+            # Install latest Chrome so chromiumdriver doesn't complain
             wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
             echo "deb [ arch=amd64 ] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google.list
-            echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 
 
             sudo apt-get update
@@ -182,7 +194,7 @@ jobs:
   test-without-oplog:
     <<: *defaults
     docker:
-      - image: circleci/node:8.11-browsers
+      - image: circleci/node:8.11-stretch-browsers
       - image: circleci/mongo:3.4
 
     environment:
@@ -198,10 +210,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            # Install latest Chrome so chromiumdriver doesn't complain
             wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
             sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
             echo "deb [ arch=amd64 ] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google.list
-            echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+
             sudo apt-get update
             sudo apt-get install -y mongodb-org-shell google-chrome-stable
 
@@ -221,7 +234,7 @@ jobs:
   deploy:
     <<: *defaults
     docker:
-      - image: circleci/node:8.11
+      - image: circleci/node:8.11-stretch
 
     steps:
       - attach_workspace:
@@ -235,9 +248,9 @@ jobs:
             if [[ $CIRCLE_PULL_REQUESTS ]]; then exit 0; fi;
 
             sudo apt-get -y -qq update
-            sudo apt-get -y -qq install python3.4-dev jq
+            sudo apt-get -y -qq install python3-dev jq
             curl -O https://bootstrap.pypa.io/get-pip.py
-            python3.4 get-pip.py --user
+            python3 get-pip.py --user
             export PATH=~/.local/bin:$PATH
             pip install awscli --upgrade --user
 
@@ -260,6 +273,11 @@ jobs:
 workflows:
   version: 2
   build-and-test:
+    filters:
+      branches:
+        only:
+          - staging
+          - production
     jobs:
       - build
       - test-with-oplog:
@@ -277,4 +295,3 @@ workflows:
               only:
                 - production
                 - staging
-                - rc_update
