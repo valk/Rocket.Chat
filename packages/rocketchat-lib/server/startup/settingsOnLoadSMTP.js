@@ -19,9 +19,16 @@ const buildMailURL = _.debounce(function() {
 
 		process.env.MAIL_URL += `?pool=${ RocketChat.settings.get('SMTP_Pool') }`;
 
-		if (RocketChat.settings.get('SMTP_Protocol') === 'smtp' && RocketChat.settings.get('SMTP_IgnoreTLS')) {
+		if (RocketChat.settings.get('SMTP_Protocol') === 'smtp' && RocketChat.settings.get('SMTP_TLS') === 'ignore') {
+			console.log('SMTP IGNORED');
 			process.env.MAIL_URL += '&secure=false&ignoreTLS=true';
 		}
+
+		if (RocketChat.settings.get('SMTP_Protocol') === 'smtp' && RocketChat.settings.get('SMTP_TLS') === 'require') {
+			console.log('SMTP REQUIRED');
+			process.env.MAIL_URL += '&requireTLS=true';
+		}
+
 
 		return process.env.MAIL_URL;
 	}
@@ -57,7 +64,7 @@ RocketChat.settings.onload('SMTP_Pool', function() {
 	return buildMailURL();
 });
 
-RocketChat.settings.onload('SMTP_IgnoreTLS', function() {
+RocketChat.settings.onload('SMTP_TLS', function() {
 	return buildMailURL();
 });
 
