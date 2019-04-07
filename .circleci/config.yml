@@ -273,13 +273,13 @@ jobs:
 workflows:
   version: 2
   build-and-test:
-    filters:
-      branches:
-        only:
-          - staging
-          - production
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only:
+                - staging
+                - production
       - test-with-oplog:
           requires:
             - build
