@@ -90,10 +90,10 @@ jobs:
       - run:
           name: Prepare build
           command: |
-            mkdir /tmp/build/
-            cd /tmp/build-test
-            tar czf /tmp/build/Rocket.Chat.tar.gz bundle
             cd /tmp/build-test/bundle/programs/server
+            npm shrinkwrap
+            mkdir /tmp/build/
+            (cd /tmp/build-test ; tar czf /tmp/build/Rocket.Chat.tar.gz bundle)
             npm install
 
       # - save_cache:
@@ -272,11 +272,6 @@ jobs:
 workflows:
   version: 2
   build-and-test:
-    filters:
-      branches:
-        only:
-          - staging
-          - production
     jobs:
       - build
       - test-with-oplog:
@@ -289,8 +284,3 @@ workflows:
           requires:
             - test-with-oplog
             - test-without-oplog
-          filters:
-            branches:
-              only:
-                - production
-                - staging
