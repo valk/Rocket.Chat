@@ -160,8 +160,8 @@ const server = http.createServer(app);
 
 let timer;
 const updatePrometheusConfig = () => {
-	const port = RocketChat.settings.get('Prometheus_Port');
-	const enabled = RocketChat.settings.get('Prometheus_Enabled');
+	const port = process.env.PROMETHEUS_PORT || RocketChat.settings.get('Prometheus_Port');
+	const enabled = process.env.PROMETHEUS_ENABLED || RocketChat.settings.get('Prometheus_Enabled');
 
 	if (port == null || enabled == null) {
 		return;
