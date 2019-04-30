@@ -102,6 +102,8 @@ export const openRoom = function(type, name) {
 		named_room.name = name;
 		fireGlobalEvent('room-opened', named_room);
 
+		Session.set('currentRoomName', named_room.name);
+		Session.set('currentRoomType', named_room.t);
 		Session.set('editRoomTitle', false);
 		RoomManager.updateMentionsMarksOfRoom(type + name);
 		Meteor.setTimeout(() => readMessage.readNow(), 2000);
