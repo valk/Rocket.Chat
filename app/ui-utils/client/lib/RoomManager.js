@@ -16,6 +16,7 @@ import { CachedChatRoom, ChatMessage, ChatSubscription, CachedChatSubscription }
 import { CachedCollectionManager } from '../../../ui-cached-collection';
 import { getConfig } from '../config';
 import { ROOM_DATA_STREAM_OBSERVER } from '../../../utils/stream/constants';
+import { Users } from '../../../models/client';
 
 import { call } from '..';
 
@@ -91,6 +92,7 @@ export const RoomManager = new function() {
 								}
 
 								msg.name = room.name;
+								msg.u = Users.findOne({ _id: msg.u._id });
 								RoomManager.updateMentionsMarksOfRoom(typeName);
 
 								callbacks.run('streamMessage', msg);
