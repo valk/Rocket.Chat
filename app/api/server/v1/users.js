@@ -39,6 +39,7 @@ API.v1.addRoute('users.create', { authRequired: true }, {
 			sendWelcomeEmail: Match.Maybe(Boolean),
 			verified: Match.Maybe(Boolean),
 			customFields: Match.Maybe(Object),
+			settings: Match.Maybe(Object),
 		});
 
 		// New change made by pull request #5152
@@ -56,6 +57,9 @@ API.v1.addRoute('users.create', { authRequired: true }, {
 			saveCustomFieldsWithoutValidation(newUserId, this.bodyParams.customFields);
 		}
 
+		if (this.bodyParams.settings) {
+			Users.setPreferences(newUserId, this.bodyParams.settings);
+		}
 
 		if (typeof this.bodyParams.active !== 'undefined') {
 			Meteor.runAsUser(this.userId, () => {
@@ -455,6 +459,7 @@ API.v1.addRoute('users.update', { authRequired: true, twoFactorRequired: true },
 				sendWelcomeEmail: Match.Maybe(Boolean),
 				verified: Match.Maybe(Boolean),
 				customFields: Match.Maybe(Object),
+				settings: Match.Maybe(Object),
 			}),
 		});
 
@@ -464,6 +469,10 @@ API.v1.addRoute('users.update', { authRequired: true, twoFactorRequired: true },
 
 		if (this.bodyParams.data.customFields) {
 			saveCustomFields(this.bodyParams.userId, this.bodyParams.data.customFields);
+		}
+
+		if (this.bodyParams.data.settings) {
+			Users.setPreferences(this.bodyParams.userId, this.bodyParams.data.settings);
 		}
 
 		if (typeof this.bodyParams.data.active !== 'undefined') {
