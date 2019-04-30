@@ -15,6 +15,7 @@ import _ from 'underscore';
 import { upsertMessage, RoomHistoryManager } from './RoomHistoryManager';
 import { mainReady } from './mainReady';
 import { getConfig } from '../config';
+import { Users } from '../../../models/client';
 
 
 const maxRoomsOpen = parseInt(getConfig('maxRoomsOpen')) || 5 ;
@@ -84,6 +85,7 @@ export const RoomManager = new function() {
 											};
 										}
 										msg.name = room.name;
+										msg.u = Users.findOne({ _id: msg.u._id });
 										RoomManager.updateMentionsMarksOfRoom(typeName);
 
 										callbacks.run('streamMessage', msg);
