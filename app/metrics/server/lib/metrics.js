@@ -160,12 +160,12 @@ const server = http.createServer(app);
 let timer;
 const updatePrometheusConfig = async () => {
 	const port = process.env.PROMETHEUS_PORT || settings.get('Prometheus_Port');
-	const enabled = settings.get('Prometheus_Enabled');
+	const enabled = process.env.PROMETHEUS_ENABLED || settings.get('Prometheus_Enabled');
 	if (port == null || enabled == null) {
 		return;
 	}
 
-	if (enabled === true) {
+	if (enabled === '1' || enabled === true) {
 		server.listen({
 			port,
 			host: process.env.BIND_IP || '0.0.0.0',
