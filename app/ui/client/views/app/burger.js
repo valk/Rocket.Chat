@@ -36,6 +36,7 @@ Template.burger.helpers({
 			}, [0, false]);
 
 		if (unreadCount > 0) {
+			window.fireGlobalEvent('unread-messages', { unread_msgs: unreadCount });
 			return unreadCount > 99 ? '99+' : unreadCount;
 		}
 
