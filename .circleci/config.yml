@@ -81,11 +81,10 @@ jobs:
 
       - run:
           name: Build Rocket.Chat
+          environment:
+            TOOL_NODE_FLAGS: --max_old_space_size=3072
           command: |
             if [[ $CIRCLE_TAG ]]; then meteor reset; fi
-            set +e
-            meteor add rocketchat:lib
-            set -e
             meteor build --server-only --directory /tmp/build-test
 
       - run:
@@ -192,44 +191,6 @@ jobs:
       - store_artifacts:
           path: .screenshots/
 
-  test-without-oplog:
-    <<: *defaults
-    docker:
-      - image: circleci/node:8.11-stretch-browsers
-      - image: circleci/mongo:3.4
-
-    environment:
-      TEST_MODE: "true"
-      MONGO_URL: mongodb://localhost:27017/testwithoplog
-
-    steps:
-      - attach_workspace:
-          at: /tmp
-
-      - checkout
-
-      - run:
-          name: Install dependencies
-          command: |
-            # Install latest Chrome so chromiumdriver doesn't complain
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            echo "deb [ arch=amd64 ] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google.list
-
-            sudo apt-get update
-            sudo apt-get install -y google-chrome-stable
-
-      - run:
-          name: NPM install
-          command: |
-            npm install
-
-      - run:
-          name: Run Tests
-          command: |
-            for i in $(seq 1 5); do npm test && s=0 && break || s=$? && sleep 1; done; (exit $s)
-
-      - store_artifacts:
-          path: .screenshots/
 
   deploy:
     <<: *defaults
@@ -283,13 +244,9 @@ workflows:
       - test-with-oplog:
           requires:
             - build
-      - test-without-oplog:
-          requires:
-            - build
       - deploy:
           requires:
             - test-with-oplog
-            - test-without-oplog
           filters:
             branches:
               only:
