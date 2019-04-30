@@ -147,6 +147,17 @@ API.v1.addRoute('users.getPresence', { authRequired: true }, {
 	},
 });
 
+API.v1.addRoute('users.unreadCount', { authRequired: true }, {
+	get() {
+		const user = this.getUserFromParams();
+		const unreadCount = Subscriptions.findUnreadByUserId(user._id).fetch()[0];
+
+		return API.v1.success({
+			data: unreadCount || {},
+		});
+	},
+});
+
 API.v1.addRoute('users.info', { authRequired: true }, {
 	get() {
 		const { username } = this.getUserFromParams();
