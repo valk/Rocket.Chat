@@ -4,7 +4,9 @@ import { Layout } from '../../../../ui-utils';
 
 Template.burger.helpers({
 	unread() {
-		return Session.get('unread');
+		const unread = Session.get('unread');
+		window.fireGlobalEvent('unread-messages', { unread_msgs: unread });
+		return unread;
 	},
 	isMenuOpen() {
 		if (Session.equals('isMenuOpen', true)) {
