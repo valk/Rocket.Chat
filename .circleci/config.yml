@@ -403,7 +403,7 @@ workflows:
             - build
           filters:
             branches:
-              only: develop
+              only: rc_1.0.3
             tags:
               only: /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:rc|beta)\.[0-9]+)?$/
       - test-with-oplog-mongo-3-6: *test-mongo-no-pr
@@ -416,7 +416,7 @@ workflows:
             - test-with-oplog-mongo-4-0
           filters:
             branches:
-              only: develop
+              only: rc_1.0.3
             tags:
               only: /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:rc|beta)\.[0-9]+)?$/
       - image-build:
