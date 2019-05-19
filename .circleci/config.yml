@@ -390,58 +390,15 @@ workflows:
     jobs:
       - build:
           filters:
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:rc|beta)\.[0-9]+)?$/
+            branches:
+              only: 
+		- rc_update
       - test-with-oplog-mongo-3-2: &test-mongo
           requires:
             - build
-          filters:
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:rc|beta)\.[0-9]+)?$/
-      - test-with-oplog-mongo-3-4: &test-mongo-no-pr
-          requires:
-            - build
-          filters:
-            branches:
-              only: develop
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:rc|beta)\.[0-9]+)?$/
-      - test-with-oplog-mongo-3-6: *test-mongo-no-pr
-      - test-with-oplog-mongo-4-0: *test-mongo
       - deploy:
           requires:
             - test-with-oplog-mongo-3-2
-            - test-with-oplog-mongo-3-4
-            - test-with-oplog-mongo-3-6
-            - test-with-oplog-mongo-4-0
           filters:
             branches:
-              only: develop
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:rc|beta)\.[0-9]+)?$/
-      - image-build:
-          requires:
-            - deploy
-          filters:
-            branches:
-              only: develop
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:rc|beta)\.[0-9]+)?$/
-      - hold:
-          type: approval
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: develop
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:rc|beta)\.[0-9]+)?$/
-      - pr-image-build:
-          requires:
-            - hold
-          filters:
-            branches:
-              ignore: develop
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:rc|beta)\.[0-9]+)?$/
-
+              only: rc_update
