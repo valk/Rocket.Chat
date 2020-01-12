@@ -173,7 +173,9 @@ const oplogMetric = ({ collection, op }) => {
 let timer;
 const updatePrometheusConfig = async () => {
 	const port = process.env.PROMETHEUS_PORT || settings.get('Prometheus_Port');
-	const enabled = settings.get('Prometheus_Enabled');
+	const enabled = process.env.PROMETHEUS_ENABLED
+		? process.env.PROMETHEUS_ENABLED === '1'
+		: settings.get('Prometheus_Enabled');
 
 	if (!port || !enabled) {
 		server.close();
