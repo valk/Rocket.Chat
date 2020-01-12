@@ -8,6 +8,9 @@ on:
   push:
     branches:
       - develop
+      - sa_*
+      - staging
+      - production
 
 env:
   CI: true
@@ -120,7 +123,7 @@ jobs:
     #     git checkout -- server/main.js client/main.js .meteor/packages
 
     - name: Reset Meteor
-      if: startsWith(github.ref, 'refs/tags/') == 'true' || github.ref == 'refs/heads/develop'
+      if: startsWith(github.ref, 'refs/tags/') == 'true' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/production'
       run: |
         meteor reset
 
@@ -245,7 +248,7 @@ jobs:
 
   build-image-pr:
     runs-on: ubuntu-latest
-    if: github.event_name == 'DEACTIVATED-pull_request'
+    if: false  # Seeking Alpha is not using Pull Requests right now, so disable this
 
     steps:
     - uses: actions/checkout@v1
@@ -342,9 +345,9 @@ jobs:
         docker build -t $IMAGE_NAME .
         docker push $IMAGE_NAME
 
-  deploy:
+  deploy:  # "Deploy" by copying the tarball to S3.  Use Jenkins to do the actual deployment to our rocketchat servers.
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' || github.ref == 'refs/heads/develop'
+    if: github.event_name == 'release' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/production' || startsWith(github.ref, 'refs/heads/sa_')
     needs: test
 
     steps:
@@ -358,13 +361,13 @@ jobs:
 
     - name: Publish assets
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
-        REDHAT_REGISTRY_PID: ${{ secrets.REDHAT_REGISTRY_PID }}
-        REDHAT_REGISTRY_KEY: ${{ secrets.REDHAT_REGISTRY_KEY }}
-        UPDATE_TOKEN: ${{ secrets.UPDATE_TOKEN }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.aws_user_circleci_rocketchat_access_key_id }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_user_circleci_rocketchat_secret_access_key }}
       run: |
+        # Upstream had to migrate urgently from CircleCI to GitHubCI.
+        # Much functionality is still in the `.circleci/` folder
+        # and uses CIRCLE_* variable names.
+
         if [[ '${{ github.event_name }}' = 'release' ]]; then
           export CIRCLE_TAG="${GITHUB_REF#*tags/}"
         else
@@ -375,20 +378,15 @@ jobs:
         export CIRCLE_SHA1=$GITHUB_SHA
         export CIRCLE_BUILD_NUM=$GITHUB_SHA
 
-        aws s3 cp s3://rocketchat/sign.key.gpg .circleci/sign.key.gpg
+        source .circleci/setartname.sh    # exports ARTIFACT_NAME, RC_RELEASE, RC_VERSION, and SNAP_CHANNEL
+        source .circleci/setdeploydir.sh  # exports ROCKET_DEPLOY_DIR
+        source .circleci/set_s3_params.sh # consumes AWS_* credentials and replaces them! Exports UPLOAD_DIR, AWS_BUCKET, AWS_*
 
-        source .circleci/setartname.sh
-        source .circleci/setdeploydir.sh
-        bash .circleci/setupsig.sh
-        bash .circleci/namefiles.sh
+        bash .circleci/namefiles.sh       # consumes ARTIFACT_NAME and ROCKET_DEPLOY_DIR. Creates tarballs in ROCKET_DEPLOY_DIR
+        aws s3 cp $ROCKET_DEPLOY_DIR/ s3://$AWS_BUCKET/$UPLOAD_DIR/ --recursive  # consumes AWS_*
 
-        aws s3 cp $ROCKET_DEPLOY_DIR/ s3://download.rocket.chat/build/ --recursive
-
-        bash .circleci/update-releases.sh
-        # bash .circleci/snap.sh
-        bash .circleci/redhat-registry.sh
-
-  image-build:
+  image-build: # Build/Publish Docker image
+    if: false  # Seeking Alpha does not use Docker images for Rocket.Chat, so we don't need this
     runs-on: ubuntu-latest
     needs: deploy
 
