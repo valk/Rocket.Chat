@@ -36,7 +36,13 @@ metrics.rocketchatHooks = new client.Summary({
 metrics.rocketchatRestApi = new client.Summary({
 	name: 'rocketchat_rest_api',
 	help: 'summary of rocketchat rest api count and time',
-	labelNames: ['method', 'entrypoint', 'user_agent', 'status', 'version'],
+	labelNames: ['method', 'entrypoint', 'user_agent', 'status', 'version', 'user_id', 'client_address'],
+});
+
+metrics.restApiRateLimitExceeded = new client.Counter({
+	name: 'rocketchat_rest_api_rate_limit_exceeded',
+	labelNames: ['user_id', 'client_address', 'method', 'endpoint', 'user_agent'],
+	help: 'number of times a rest api rate limiter was exceeded',
 });
 
 metrics.meteorSubscriptions = new client.Summary({
