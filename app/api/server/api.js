@@ -200,7 +200,7 @@ export class APIClass extends Restivus {
 
 		if (!attemptResult.allowed) {
 			metrics.restApiRateLimitExceeded.inc({
-				user_id: userId,
+				user_id: this.userId,
 				client_address: objectForRateLimitMatch.IPAddr,
 				method: request.method.toLowerCase(),
 				endpoint: request.route,
