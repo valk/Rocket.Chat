@@ -313,8 +313,8 @@ export class APIClass extends Restivus {
 						version,
 						user_agent: this.request.headers['user-agent'],
 						entrypoint: route,
-						user_id: this.userId,
-						client_address: requestIp,
+						user_id: settings.get('API_Enable_Rate_Limiter_Track_UserId') ? this.userId : undefined,
+						client_address: settings.get('API_Enable_Rate_Limiter_Track_IP') ? requestIp : undefined,
 					});
 
 					logger.debug(`${ this.request.method.toUpperCase() }: ${ this.request.url }`);
