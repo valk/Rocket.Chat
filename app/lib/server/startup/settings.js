@@ -751,6 +751,12 @@ settings.addGroup('General', function() {
 			},
 		],
 	});
+	this.add('Temp_Disable_presence', false, {
+		type: 'boolean',
+	});
+	this.add('Temp_Disable_session', false, {
+		type: 'boolean',
+	});
 	this.add('Site_Url', typeof __meteor_runtime_config__ !== 'undefined' && __meteor_runtime_config__ !== null ? __meteor_runtime_config__.ROOT_URL : null, {
 		type: 'string',
 		i18nDescription: 'Site_Url_Description',
