@@ -2818,6 +2818,8 @@ settings.addGroup('Rate Limiter', function() {
 	this.section('API Rate Limiter', function() {
 		this.add('API_Enable_Rate_Limiter', true, { type: 'boolean' });
 		this.add('API_Enable_Rate_Limiter_Dev', true, { type: 'boolean', enableQuery: { _id: 'API_Enable_Rate_Limiter', value: true } });
+		this.add('API_Enable_Rate_Limiter_Track_UserId', false, { type: 'boolean', enableQuery: { _id: 'API_Enable_Rate_Limiter', value: true } });
+		this.add('API_Enable_Rate_Limiter_Track_IP', false, { type: 'boolean', enableQuery: { _id: 'API_Enable_Rate_Limiter', value: true } });
 		this.add('API_Enable_Rate_Limiter_Limit_Calls_Default', 10, { type: 'int', enableQuery: { _id: 'API_Enable_Rate_Limiter', value: true } });
 		this.add('API_Enable_Rate_Limiter_Limit_Time_Default', 60000, { type: 'int', enableQuery: { _id: 'API_Enable_Rate_Limiter', value: true } });
 	});
