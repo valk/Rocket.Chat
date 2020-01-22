@@ -1,6 +1,7 @@
 import { UserPresenceEvents } from 'meteor/konecty:user-presence';
 
 import { Notifications } from '../../../app/notifications/server';
+import { settings } from '../../../app/settings/server';
 
 // mirror of object in /imports/startup/client/listenActiveUsers.js - keep updated
 const STATUS_MAP = {
@@ -10,7 +11,7 @@ const STATUS_MAP = {
 	busy: 3,
 };
 
-UserPresenceEvents.on('setUserStatus', (user, status/* , statusConnection*/) => {
+const notifyStatus = (user, status/* , statusConnection*/) => {
 	const {
 		_id,
 		username,
@@ -25,4 +26,11 @@ UserPresenceEvents.on('setUserStatus', (user, status/* , statusConnection*/) => 
 		STATUS_MAP[status],
 		statusText,
 	]);
+};
+
+settings.get('Temp_Disable_presence', (key, value) => {
+	if (value) {
+		return UserPresenceEvents.removeListener('setUserStatus', notifyStatus);
+	}
+	UserPresenceEvents.on('setUserStatus', notifyStatus);
 });
