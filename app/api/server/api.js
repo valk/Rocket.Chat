@@ -199,6 +199,14 @@ export class APIClass extends Restivus {
 		response.setHeader('X-RateLimit-Reset', new Date().getTime() + attemptResult.timeToReset);
 
 		if (!attemptResult.allowed) {
+			metrics.restApiRateLimitExceeded.inc({
+				user_id: userId,
+				client_address: objectForRateLimitMatch.IPAddr,
+				method: request.method.toLowerCase(),
+				endpoint: request.route,
+				user_agent: request.headers['user-agent'],
+			});
+
 			throw new Meteor.Error('error-too-many-requests', `Error, too many requests. Please slow down. You must wait ${ timeToResetAttempsInSeconds } seconds before trying this endpoint again.`, {
 				timeToReset: attemptResult.timeToReset,
 				seconds: timeToResetAttempsInSeconds,
@@ -299,15 +307,17 @@ export class APIClass extends Restivus {
 				const originalAction = endpoints[method].action;
 				const api = this;
 				endpoints[method].action = function _internalRouteActionHandler() {
+					const requestIp = getRequestIP(this.request);
 					const rocketchatRestApiEnd = metrics.rocketchatRestApi.startTimer({
 						method,
 						version,
 						user_agent: this.request.headers['user-agent'],
 						entrypoint: route,
+						user_id: settings.get('API_Enable_Rate_Limiter_Track_UserId') ? this.userId : undefined,
+						client_address: settings.get('API_Enable_Rate_Limiter_Track_IP') ? requestIp : undefined,
 					});
 
 					logger.debug(`${ this.request.method.toUpperCase() }: ${ this.request.url }`);
-					const requestIp = getRequestIP(this.request);
 					const objectForRateLimitMatch = {
 						IPAddr: requestIp,
 						route: `${ this.request.route }${ this.request.method.toLowerCase() }`,
