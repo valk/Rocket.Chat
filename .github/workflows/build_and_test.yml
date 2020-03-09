@@ -182,7 +182,10 @@ jobs:
 
     - name: Setup Chrome
       run: |
-        npm i chromedriver
+        # TMP: Lock down to an old version of chrome until we upgrade to node >=10.
+        # chromedriver@80 => mkdirp@1.x => node >= 10
+        # chromedriver@79 => mkdirp@0.5 => node >= 8
+        npm install chromedriver@79.0.2
 
     - name: Configure Replica Set
       run: |
