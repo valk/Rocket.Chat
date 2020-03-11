@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04@548a28dc8d0f0bc7ff5e7b8b66dd1df080a04833
 
     steps:
     - name: Github Info
@@ -149,7 +149,7 @@ jobs:
         path: /tmp/build
 
   test:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-16.04@548a28dc8d0f0bc7ff5e7b8b66dd1df080a04833
     needs: build
 
     strategy:
