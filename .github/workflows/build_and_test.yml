@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.10
 
     steps:
     - name: Github Info
@@ -149,7 +149,7 @@ jobs:
         path: /tmp/build
 
   test:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-16.10
     needs: build
 
     strategy:
@@ -182,14 +182,7 @@ jobs:
 
     - name: Setup Chrome
       run: |
-        # TMP: Lock down to an old version of chrome until we upgrade to node >=10.
-        # chromedriver@80 => mkdirp@1.x => node >= 10
-        # chromedriver@79 => mkdirp@0.5 => node >= 8
-        #npm install chromedriver@79.0.2
-        # That didn't work.  Trying a different approach.  AFAICT, this tells
-        # the chromedriver package to install the actual chromedriver binary appropriate for
-        # the system-installed version of chrome.
-        npm install chromedriver@79.0.2 --detect_chromedriver_version
+        npm install chromedriver
 
     - name: Configure Replica Set
       run: |
@@ -219,7 +212,7 @@ jobs:
         for i in $(seq 1 5); do (docker exec mongo mongo rocketchat --eval 'db.dropDatabase()') && xvfb-run --auto-servernum npm test && s=0 && break || s=$? && sleep 1; done; (exit $s)
 
 #   notification:
-#     runs-on: ubuntu-latest
+#     runs-on: ubuntu-16.10
 #     needs: test
 
 #     steps:
@@ -233,7 +226,7 @@ jobs:
 #         token: ${{ secrets.GITHUB_TOKEN }}
 
   build-image-pr:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.10
     if: false  # Seeking Alpha is not using Pull Requests right now, so disable this
 
     steps:
@@ -334,7 +327,7 @@ jobs:
         docker push $IMAGE_NAME
 
   copy-to-S3:  # "Deploy" by copying the tarball to S3.  Use Jenkins to do the actual deployment to our rocketchat servers.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.10
     needs: test
 
     steps:
@@ -374,7 +367,7 @@ jobs:
 
   image-build: # Build/Publish Docker image
     if: false  # Seeking Alpha does not use Docker images for Rocket.Chat, so we don't need this
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.10
     needs: copy-to-S3
 
     strategy:
