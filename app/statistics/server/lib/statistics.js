@@ -138,12 +138,14 @@ export const statistics = {
 		statistics.mongoVersion = mongoVersion;
 		statistics.mongoStorageEngine = mongoStorageEngine;
 
-		statistics.uniqueUsersOfYesterday = Sessions.getUniqueUsersOfYesterday();
-		statistics.uniqueUsersOfLastMonth = Sessions.getUniqueUsersOfLastMonth();
-		statistics.uniqueDevicesOfYesterday = Sessions.getUniqueDevicesOfYesterday();
-		statistics.uniqueDevicesOfLastMonth = Sessions.getUniqueDevicesOfLastMonth();
-		statistics.uniqueOSOfYesterday = Sessions.getUniqueOSOfYesterday();
-		statistics.uniqueOSOfLastMonth = Sessions.getUniqueOSOfLastMonth();
+		if (!settings.get('Temp_Disable_session')) {
+			statistics.uniqueUsersOfYesterday = Sessions.getUniqueUsersOfYesterday();
+			statistics.uniqueUsersOfLastMonth = Sessions.getUniqueUsersOfLastMonth();
+			statistics.uniqueDevicesOfYesterday = Sessions.getUniqueDevicesOfYesterday();
+			statistics.uniqueDevicesOfLastMonth = Sessions.getUniqueDevicesOfLastMonth();
+			statistics.uniqueOSOfYesterday = Sessions.getUniqueOSOfYesterday();
+			statistics.uniqueOSOfLastMonth = Sessions.getUniqueOSOfLastMonth();
+		}
 
 		statistics.apps = {
 			engineVersion: Info.marketplaceApiVersion,

@@ -678,6 +678,12 @@ API.v1.addRoute('users.removePersonalAccessToken', { authRequired: true }, {
 
 API.v1.addRoute('users.presence', { authRequired: true }, {
 	get() {
+		if (settings.get('Temp_Disable_presence')) {
+			return {
+				users: [],
+				full: false,
+			};
+		}
 		const { from, ids } = this.queryParams;
 
 		const options = {
