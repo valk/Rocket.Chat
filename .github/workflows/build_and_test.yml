@@ -374,10 +374,9 @@ jobs:
 
         source .circleci/setartname.sh    # exports ARTIFACT_NAME, RC_RELEASE, RC_VERSION, and SNAP_CHANNEL
         source .circleci/setdeploydir.sh  # exports ROCKET_DEPLOY_DIR
-        source .circleci/set_s3_params.sh # consumes AWS_* credentials and replaces them! Exports UPLOAD_DIR, AWS_BUCKET, AWS_*
 
         bash .circleci/namefiles.sh       # consumes ARTIFACT_NAME and ROCKET_DEPLOY_DIR. Creates tarballs in ROCKET_DEPLOY_DIR
-        aws s3 cp --recursive $ROCKET_DEPLOY_DIR/ s3://$AWS_BUCKET/$UPLOAD_DIR/  # consumes AWS_*
+        aws s3 cp --recursive $ROCKET_DEPLOY_DIR/ s3://seekingalpha-rocketchat-builds/  # consumes AWS_*
 
   image-build: # Build/Publish Docker image
     if: false  # Seeking Alpha does not use Docker images for Rocket.Chat, so we don't need this
