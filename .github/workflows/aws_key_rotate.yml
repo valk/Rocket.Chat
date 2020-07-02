@@ -1,7 +1,5 @@
-###
-### Simpliest script for keys rotation 
-###
-name: 'Rotate Production AWS key'
+
+name: 'Rotate  AWS key'
 
 
 on:
@@ -10,16 +8,16 @@ on:
 
 jobs:
   rotate:
-    name: rotate iam user keys for Production
+    name: rotate iam user keys 
     runs-on: ubuntu-latest
     steps:
-      - name: rotate Production aws keys
+      - name: rotate  aws keys
         uses: seekingalpha/github-action-rotate-aws-secrets@v1.0.5
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_PRODUCTION_DEPLOY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_PRODUCTION_DEPLOY_KEY }}
-          GITHUB_ACCESS_KEY_NAME: 'AWS_PRODUCTION_DEPLOY_ID'
-          GITHUB_SECRET_KEY_NAME: 'AWS_PRODUCTION_DEPLOY_KEY'
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_USER_GITHUB_ROCKETCHAT_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_USER_GITHUB_ROCKETCHAT_SECRET_ACCESS_KEY }}
+          GITHUB_ACCESS_KEY_NAME: 'AWS_USER_GITHUB_ROCKETCHAT_ACCESS_KEY_ID'
+          GITHUB_SECRET_KEY_NAME: 'AWS_USER_GITHUB_ROCKETCHAT_SECRET_ACCESS_KEY'
           IAM_USERNAME: ${{ secrets.AWS_IAM_USERNAME }}
-          GITHUB_TOKEN: ${{ secrets.SAMW_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ROCKETCHAT_GITHUB_TOKEN }}
           OWNER_REPOSITORY: ${{ github.repository }}

@@ -347,8 +347,8 @@ jobs:
 
     - name: Publish assets
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.aws_user_circleci_rocketchat_access_key_id }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_user_circleci_rocketchat_secret_access_key }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.aws_user_github_rocketchat_access_key_id }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_user_github_rocketchat_secret_access_key }}
       run: |
         # Upstream had to migrate urgently from CircleCI to GitHubCI.
         # Much functionality is still in the `.circleci/` folder
